@@ -5,7 +5,16 @@ import Status from './Status.jsx';
 import { useState, useEffect } from 'react';
 import IncidentHistory from './IncidentHistory.jsx';
 import DeletedHistory from './DeletedHistory.jsx';
-import Sidebar from './Sidebar/Sidebar.jsx';xcxx
+import Sidebar from './Sidebar/Sidebar.jsx';
+
+function DashboardStore() {
+    const [activePanel, setActivePanel] = useState(null);
+    const [storeID, setStoreID] = useState('');
+    const navigate = useNavigate();
+
+    const handleLogout = () => {
+        localStorage.removeItem('store_ID'); 
+        navigate("/");
     }
 
     useEffect(() => {
