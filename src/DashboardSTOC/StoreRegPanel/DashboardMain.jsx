@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import Sidebar from "../SidebarMenu/Sidebar.jsx";
-import StoreRegPanel from "../StoreRegPanel/StoreRegPanel.jsx";
+import StoreregPanel from "../StoreRegPanel/StoreregPanel.jsx";
 import IncidentReportPanel from "../IncidentReportPanel/IncidentReportPanel.jsx";
 import RegisterStorePanel from "../RegisterStorePanel/RegisterStorePanel.jsx";
 import DeleteHistory from "../IncidentReportPanel/DeleteHistory.jsx";
@@ -23,7 +23,7 @@ function Dashboard() {
             {/* Dashboard Content */}
             <div className={styles.dashboardContent}>
                 {/* Display selected sidebar panel */}
-                {activePanel === "StoreRegPanel" && <StoreRegPanel />}
+                {activePanel === "StoreregPanel" && <StoreregPanel closePanel={() => setActivePanel(null)}/>}
                 {activePanel === "IncidentReportPanel" && (<IncidentReportPanel closePanel={() => setActivePanel(null)} />)}
                 {activePanel === "RegisterStorePanel" && (<RegisterStorePanel closePanel={() => setActivePanel(null)} />)}                
                 {activePanel === "DeleteHistory" && (<DeleteHistory closePanel={() => setActivePanel(null)} />)}
