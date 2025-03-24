@@ -1,0 +1,66 @@
+.RepCountPanel {
+    text-align: center;
+    width: 100%; 
+    color: white;
+}
+
+.chartsWrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center; 
+    width: 100%;
+    height:50%;
+    max-width: 1300px;
+    margin: auto;
+}
+
+.totalCount {
+    font-size: 2rem;
+    font-weight: bold;
+    margin: 5px 0;
+}
+
+.chartContainer {
+    width: 100%; 
+    height: 330px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+@media (max-width: 768px) {
+    .RepCountPanel {
+        width: 95%;
+        padding: 5px;
+    }
+
+    .totalCount {
+        font-size: 1.5rem;
+    }
+
+    .chartContainer {
+        width: 90%; 
+        height: 280px;  
+    }
+
+    .chartsWrapper {
+        flex-direction: column;
+        align-items: center;
+    }
+}
+
+@media (max-width: 480px) {
+    .RepCountPanel {
+        width: 100%;
+        padding: 10px;
+    }
+
+    .totalCount {
+        font-size: 1.2rem;
+    }
+
+    .chartContainer {
+        height: 200px; 
+    }
+}
+

@@ -1,0 +1,138 @@
+:root {
+  --primary-color: #5c9ae0;
+  --secondary-color: #4998de;
+  --text-color: #030236;
+  --background-color: #fff;
+  --hover-color: #ff3333;
+  --modal-background: rgba(0, 0, 0, 0.5);
+}
+
+.homeBg {
+  height: 90vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin: 0;
+  padding: 0 20px;
+  background: rgb(255, 255, 255);
+}
+
+.homeBg > h1 {
+  color: var(--text-color);
+  font-size: clamp(1.5rem, 8vw, 4.8rem);
+  margin: 0;
+  text-align: center;
+}
+
+.homeBg > p {
+  color: var(--text-color);
+  font-size: clamp(1rem, 4vw, 2rem);
+  font-family: 'Roboto, Trebuchet MS', Arial, sans-serif;
+  text-align: center;
+  max-width: 80%;
+  margin: 20px 0;
+}
+
+.containerStyle {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+  flex-wrap: wrap;
+  margin: 5% auto;
+}
+
+.usericon {
+  width: 110px;
+  margin-bottom: 10px;
+}
+
+.pstyle {
+  font-size: 20px;
+  font-weight: bolder;
+  font-family: Roboto ;
+}
+
+.Storereg {
+  border: 1px solid rgba(0, 0, 0, 0.336);
+  border-radius: 15px;
+  box-shadow: 5px 5px 8px hsl(0, 82%, 2%);
+  padding: 30px;
+  width: 350px;
+  background:rgb(51, 66, 81);
+  color: rgb(255, 255, 255);
+  text-align: center;
+  font-family: 'Trebuchet MS', Arial, sans-serif;
+  font-size: 25px;
+  margin: 10px;
+  cursor: pointer;
+  transition: transform 0.25s ease-in, opacity 0.25s ease-in;
+}
+
+.Storereg:hover {
+  transform: scale(1.05);
+}
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: var(--modal-background);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+}
+
+.modal-content {
+  background-color: var(--background-color);
+  padding: 20px;
+  border-radius: 10px;
+  width: 90%;
+  max-width: 400px;
+  position: relative;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.close-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background-color: #ff4d4d;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  padding: 5px 10px;
+  cursor: pointer;
+}
+
+.close-btn:hover {
+  background-color: var(--hover-color);
+}
+
+@media (max-width: 768px) {
+  .homeBg > h1 {
+      font-size: 2.5rem;
+  }
+  .homeBg > p {
+      font-size: 1rem;
+  }
+  .Storereg {
+      width: 80%;
+  }
+}
+
+@media (max-width: 480px) {
+  .homeBg > h1 {
+      font-size: 2rem;
+  }
+  .homeBg > p {
+      font-size: 0.875rem;
+  }
+  .Storereg {
+      width: 90%;
+  }
+}

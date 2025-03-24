@@ -1,0 +1,64 @@
+import { useState } from "react";
+import styles from "./PoliceRegistration.module.css";
+
+function PoliceRegPanel({ closePanel }) {  
+    const [formData, setFormData] = useState({
+        username: "",
+        password: "",
+        stoc_contact: "",
+        stoc_email: "",
+    });
+
+    const handleChange = (e) => {
+        setFormData({ ...formData, [e.target.name]: e.target.value });
+    };
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+
+        try {
+            const response = await fetch("http://localhost:5001/register-police", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(formData),
+            });
+
+            const result = await response.json();
+
+            if (response.ok) {
+                alert("✅ Police account registered successfully!");
+                closePanel(); // ✅ Close the panel on success
+                setFormData({ username: "", password: "", stoc_contact: "", stoc_email: "" });
+            } else {
+                alert(`❌ Error: ${result.error}`);
+            }
+        } catch (error) {
+            console.error("❌ Error:", error);
+            alert("❌ Failed to connect to server.");
+        }
+    };
+
+    return (
+        <div className={styles.floatingpanel}>
+            {/* ✅ Close Button */}
+            <button className={styles.closeButton} onClick={closePanel}>
+                &times;
+            </button>
+
+            <h2 className={styles.h2}>Police Account Registration</h2>
+
+            <form onSubmit={handleSubmit}>
+                <input type="text" name="username" placeholder="Username" value={formData.username} onChange={handleChange} required />
+                <input type="password" name="password" placeholder="Password" value={formData.password} onChange={handleChange} required />
+                <input type="text" name="stoc_contact" placeholder="Contact Number" value={formData.stoc_contact} onChange={handleChange} required />
+                <input type="email" name="stoc_email" placeholder="Email Address" value={formData.stoc_email} onChange={handleChange} required />
+
+                <button className={styles.submitbtn} type="submit">
+                    Submit
+                </button>
+            </form>
+        </div>
+    );
+}
+
+export default PoliceRegPanel;
