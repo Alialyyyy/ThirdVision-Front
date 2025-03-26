@@ -1,0 +1,26 @@
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "main": "db.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Alialyy/Backend-ThirdVision.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Alialyy/Backend-ThirdVision/issues"
+  },
+  "homepage": "https://github.com/Alialyy/Backend-ThirdVision#readme",
+  "description": "",
+  "dependencies": {
+    "express": "^4.21.2",
+    "ssh2": "^1.16.0",
+    "ws": "^8.18.1"
+  }
+}

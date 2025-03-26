@@ -3,12 +3,11 @@ import cors from 'cors';
 import pool from './db.js';
 import http from 'http';
 import exceljs from "exceljs";
-import { Server } from 'socket.io';
-import { createServer } from 'http';
+import fs from 'fs';
 
-const now = new Date();
-const formattedDate = now.toISOString().split('T')[0];
-const filename = `Incident_Report_${formattedDate}.xlsx`;
+import { Server } from 'socket.io';
+import { Client } from 'ssh2';
+import { WebSocketServer } from 'ws';
 
 const app = express();
 const server = http.createServer(app);
@@ -21,7 +20,213 @@ const io = new Server(server, {
 app.use(express.json());
 app.use(cors());
 
-// 🛠 FETCH MYSQL DATA TO EXCEL
+// 🛠 CONNECTION TO RPI
+const wss = new WebSocketServer({ server });
+
+const RPI_IP = 'raspberrypi.local';
+const USERNAME = 'user1';
+const PASSWORD = '1234';
+const SCRIPT_PATH = '/home/user1/Desktop/THIRDVISION FILES/new season/MARCH23-UPDATED.py';
+const PYTHON_INTERPRETER = '/home/user1/Downloads/thirdvenv/bin/python3.11';
+
+// 🛠 Function to create an SSH connection
+const createSSHConnection = () => {
+    return new Promise((resolve, reject) => {
+        const conn = new Client();
+        conn.on('ready', () => resolve(conn));
+        conn.on('error', (err) => reject(err));
+        conn.connect({
+            host: RPI_IP,
+            username: USERNAME,
+            password: PASSWORD
+        });
+    });
+};
+
+let activeConnection = null;
+let runningProcess = null;
+
+// 🛠 API to Start Detection
+app.get('/start', async (req, res) => {
+    if (runningProcess) {
+        return res.status(400).send('Detection is already running');
+    }
+
+    try {
+        const conn = await createSSHConnection();
+        console.log("Starting detection...");
+        
+        conn.exec(`${PYTHON_INTERPRETER} "${SCRIPT_PATH}"`, (err, stream) => {
+            if (err) {
+                console.error("Failed to start script:", err);
+                return res.status(500).send('Failed to start detection');
+            }
+
+            runningProcess = stream;
+            activeConnection = conn;
+
+            stream.on('data', (data) => {
+                console.log('OUTPUT:', data.toString());
+                wss.clients.forEach(client => {
+                    if (client.readyState === WebSocket.OPEN) {
+                        client.send(data.toString());
+                    }
+                });
+            });
+
+            stream.stderr.on('data', (data) => {
+                console.error('ERROR:', data.toString());
+                wss.clients.forEach(client => {
+                    if (client.readyState === WebSocket.OPEN) {
+                        client.send('ERROR: ' + data.toString());
+                    }
+                });
+            });
+
+            stream.on('close', () => {
+                console.log("Script execution completed.");
+                runningProcess = null;
+                activeConnection = null;
+            });
+
+            res.send('Detection started');
+        });
+    } catch (error) {
+        console.error("SSH Connection Failed:", error);
+        res.status(500).send("Could not connect to Raspberry Pi");
+    }
+});
+
+// 🛠 API to Stop Detection
+app.get('/stop', async (req, res) => {
+    try {
+        const conn = await createSSHConnection();
+        console.log("Stopping detection...");
+
+        conn.exec(`pgrep -f "${SCRIPT_PATH}"`, (err, stream) => {
+            let pids = "";
+            stream.on('data', (data) => {
+                pids += data.toString();
+            });
+
+            stream.on('close', () => {
+                if (!pids.trim()) {
+                    console.log("No running detection found.");
+                    return res.send("No active detection found.");
+                }
+
+                console.log("Stopping detection...");
+                conn.exec(`pkill -f "${SCRIPT_PATH}"`, (killErr, killStream) => {
+                    if (killErr) {
+                        console.error("Error stopping detection:", killErr);
+                        return res.status(500).send("Failed to stop detection");
+                    }
+
+                    killStream.on('close', () => {
+                        console.log("Detection successfully stopped.");
+                        runningProcess = null;
+                        activeConnection = null;
+                        res.send("Detection stopped");
+                        conn.end();
+                    });
+
+                    killStream.stderr.on('data', (data) => {
+                        console.error('ERROR:', data.toString());
+                    });
+                });
+            });
+
+            stream.stderr.on('data', (data) => {
+                console.error('ERROR:', data.toString());
+            });
+        });
+    } catch (error) {
+        console.error("SSH Connection Failed:", error);
+        res.status(500).send("Could not connect to Raspberry Pi");
+    }
+});
+
+// 🛠 API to Change WiFi
+app.post('/set-wifi', async (req, res) => {
+    const { ssid, password } = req.body;
+    if (!ssid || !password) return res.status(400).send('Missing WiFi credentials');
+
+    try {
+        const conn = await createSSHConnection();
+        console.log(`Setting new WiFi: SSID=${ssid}`);
+
+        const wifiConfig = `
+            ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev
+            update_config=1
+            country=US
+
+            network={
+                ssid="${ssid}"
+                psk="${password}"
+                key_mgmt=WPA-PSK
+            }
+        `;
+
+        const command = `
+            echo '${wifiConfig}' | sudo tee /etc/wpa_supplicant/wpa_supplicant.conf > /dev/null &&
+            sudo wpa_cli -i wlan0 reconfigure &&
+            sleep 5 && echo "WiFi Updated"
+        `;
+
+        conn.exec(command, (err, stream) => {
+            if (err) {
+                console.error("WiFi update failed:", err);
+                return res.status(500).send('Failed to update WiFi settings');
+            }
+
+            let output = "";
+            stream.on('data', (data) => {
+                output += data.toString();
+            });
+
+            stream.on('close', () => {
+                console.log(`Backend Response: ${output.trim()}`);
+                res.send(output.includes("FAIL") ? "WiFi change failed" : "WiFi settings updated.");
+                conn.end();
+            });
+
+            stream.stderr.on('data', (data) => console.error('ERROR:', data.toString()));
+        });
+    } catch (error) {
+        console.error("SSH Connection Failed:", error);
+        res.status(500).send("Could not connect to Raspberry Pi");
+    }
+});
+
+// 🛠 API to Get Current WiFi
+app.get('/current-wifi', async (req, res) => {
+    try {
+        const conn = await createSSHConnection();
+        console.log("Fetching current WiFi SSID...");
+
+        conn.exec("/usr/sbin/iwgetid -r", (err, stream) => {
+            if (err) {
+                console.error("Failed to get WiFi SSID:", err);
+                return res.status(500).send('Failed to get WiFi SSID');
+            }
+
+            let ssid = "";
+            stream.on('data', (data) => {
+                ssid += data.toString().trim();
+            });
+
+            stream.on('close', () => {
+                res.send(ssid || "Not Connected");
+                conn.end();
+            });
+
+            stream.stderr.on('data', (data) => console.error('ERROR:', data.toString()));
+        });
+    } catch (error) {
+        console.error("SSH Connection Failed:", error);
+        res.status(500).send("Could not connect to Raspberry Pi");
+    }
+});
 
 // 🛠 LOGIN API STOC
 app.post('/api/login', async (req, res) => {
@@ -73,14 +278,14 @@ app.post('/api/login2', async (req, res) => {
 
 // 🛠 REGISTER A STORE ACCOUNT
 app.post('/api/register', async (req, res) => {
-    const { username, password, store_name, store_location, store_contact } = req.body;
+    const { username, password, store_name, store_location, store_contact, store_address } = req.body;
 
     try {
         // 🛠 Insert new account into STORE_ACCOUNTS table
         await pool.execute(
-            `INSERT INTO STORE_ACCOUNTS (username, password, store_name, store_location, store_contact)
-             VALUES (?, ?, ?, ?, ?)`,
-            [username, password, store_name, store_location, store_contact]
+            `INSERT INTO STORE_ACCOUNTS (username, password, store_name, store_location, store_contact, store_address)
+             VALUES (?, ?, ?, ?, ?, ?)`,
+            [username, password, store_name, store_location, store_contact, store_address]
         );
 
         res.status(201).json({ message: 'Account registered successfully!' });
@@ -92,9 +297,9 @@ app.post('/api/register', async (req, res) => {
 
 // 🛠 REGISTER A POLICE ACCOUNT
 app.post("/register-police", async (req, res) => {
-    const { username, password, stoc_contact, stoc_email } = req.body;
+    const { username, password, stoc_contact, stoc_email, stoc_location } = req.body;
 
-    if (!username || !password || !stoc_contact || !stoc_email) {
+    if (!username || !password || !stoc_contact || !stoc_email || !stoc_location) {
         return res.status(400).json({ error: "All fields are required." });
     }
 
@@ -109,8 +314,8 @@ app.post("/register-police", async (req, res) => {
         }
 
         await pool.query(
-            "INSERT INTO STOC_ACCOUNTS (username, password, stoc_contact, stoc_email) VALUES (?, ?, ?, ?)",
-            [username, password, stoc_contact, stoc_email]
+            "INSERT INTO STOC_ACCOUNTS (username, password, stoc_contact, stoc_email, stoc_location) VALUES (?, ?, ?, ?, ?)",
+            [username, password, stoc_contact, stoc_email, stoc_location]
         );
 
         res.status(201).json({ message: "Police account registered successfully!" });
@@ -122,26 +327,48 @@ app.post("/register-police", async (req, res) => {
 
 // 🛠 GET STOC INCIDENT HISTORY
 app.get('/api/detection-history', async (req, res) => {
-    const { search } = req.query; 
-    console.log('Received search query:', search);
-
+    const { search, searchLocations, searchThreatLevels, searchType } = req.query;
+    
     try {
-        let query = 'SELECT * FROM STOC_DETECTION_HISTORY';
+        let query = 'SELECT * FROM STOC_DETECTION_HISTORY WHERE 1=1'; // ✅ Use WHERE 1=1 to avoid SQL issues
         const params = [];
 
+        // ✅ Search Filter
         if (search) {
-            query += ' WHERE store_name LIKE ? OR location LIKE ? OR store_contact LIKE ? OR threat_level LIKE ? OR detection_type LIKE ? OR shared_detection_id ?';
-            const searchTerm = `%${search}%`; 
+            query += ` AND (store_name LIKE ? OR store_location LIKE ? OR store_contact LIKE ? OR 
+                             threat_level LIKE ? OR detection_type LIKE ? OR shared_detection_id LIKE ?)`;
+            const searchTerm = `%${search}%`;
             params.push(searchTerm, searchTerm, searchTerm, searchTerm, searchTerm, searchTerm);
         }
 
-        console.log('Executing query:', query, 'with params:', params); 
+        // ✅ Location Filter
+        if (searchLocations) {
+            const locationsArray = searchLocations.split(",");
+            query += ` AND store_location IN (${locationsArray.map(() => "?").join(",")})`;
+            params.push(...locationsArray);
+        }
+
+        // ✅ Threat Level Filter
+        if (searchThreatLevels) {
+            const threatArray = searchThreatLevels.split(",");
+            query += ` AND threat_level IN (${threatArray.map(() => "?").join(",")})`;
+            params.push(...threatArray);
+        }
+
+        // ✅ Type Filter
+        if (searchType) {
+            const typeArray = searchType.split(",");
+            query += ` AND detection_type IN (${typeArray.map(() => "?").join(",")})`;
+            params.push(...typeArray);
+        }
+
+        console.log("Executing query:", query, "with params:", params); 
 
         const [results] = await pool.execute(query, params);
         res.json(results);
     } catch (error) {
-        console.error('Database error:', error);
-        res.status(500).json({ message: 'Error retrieving history' });
+        console.error("Database error:", error);
+        res.status(500).json({ message: "Error retrieving history" });
     }
 });
 
@@ -415,8 +642,8 @@ app.delete('/api/delete-detection/:id', async (req, res) => {
 
         const { store_ID, date, time } = result[0];
         const currentDate = new Date();
-        const dateDeleted = currentDate.toISOString().split('T')[0]; 
-        const timeDeleted = currentDate.toTimeString().split(' ')[0];
+        const dateDeleted = currentDate.toISOString().split('')[0]; 
+        const timeDeleted = currentDate.toTimeString().split('')[0];
 
         const insertQuery = `
             INSERT INTO STOC_EDIT_HISTORY (date_deleted, time_deleted, detection_ID, date, time, store_ID)
@@ -530,48 +757,42 @@ app.post('/api/delete-permanent', async (req, res) => {
     }
 });
 
-//EXPORT TO EXCEL
-app.get("/api/export-excel", async (req, res) => {
+// ✅ API to Fetch Incident Report (STOC) with Filters
+app.get('/api/incident-history', async (req, res) => {
     try {
-        const [rows] = await pool.query("SELECT * FROM STOC_DETECTION_HISTORY");
+        const { searchLocations, searchThreatLevels, searchType } = req.query;
 
-        if (rows.length === 0) {
-            return res.status(404).json({ message: "No records found" });
+        let query = "SELECT * FROM STOC_DETECTION_HISTORY WHERE 1=1";
+        let queryParams = [];
+
+        // ✅ Filter by Location
+        if (searchLocations) {
+            const locationsArray = searchLocations.split(",");
+            query += ` AND store_location IN (${locationsArray.map(() => "?").join(",")})`;
+            queryParams.push(...locationsArray);
         }
 
-        const workbook = new exceljs.Workbook();
-        const worksheet = workbook.addWorksheet("Incident History");
+        // ✅ Filter by Threat Level
+        if (searchThreatLevels) {
+            const threatArray = searchThreatLevels.split(",");
+            query += ` AND threat_level IN (${threatArray.map(() => "?").join(",")})`;
+            queryParams.push(...threatArray);
+        }
 
-        worksheet.columns = [
-            { header: "ID", key: "shared_detection_id", width: 10 },
-            { header: "Store ID", key: "store_ID", width: 15 },
-            { header: "Store Name", key: "store_name", width: 20 },
-            { header: "Location", key: "store_location", width: 20 },
-            { header: "Contact", key: "store_contact", width: 15 },
-            { header: "Date", key: "date", width: 15 },
-            { header: "Time", key: "time", width: 15 },
-            { header: "Threat Level", key: "threat_level", width: 15 },
-            { header: "Type", key: "detection_type", width: 15 }
-        ];
+        // ✅ Filter by Type
+        if (searchType) {
+            const typeArray = searchType.split(",");
+            query += ` AND detection_type IN (${typeArray.map(() => "?").join(",")})`;
+            queryParams.push(...typeArray);
+        }
 
-        rows.forEach(row => {
-            worksheet.addRow(row);
-        });
+        // ✅ Execute the query
+        const [rows] = await pool.query(query, queryParams);
 
-        res.setHeader(
-            "Content-Type",
-            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-        );
-        res.setHeader(
-            "Content-Disposition",
-            "attachment; filename=Incident_Report.xlsx"
-        );
-
-        await workbook.xlsx.write(res);
-        res.end();
+        res.json(rows);
     } catch (error) {
-        console.error("Error exporting to Excel:", error);
-        res.status(500).json({ error: "Internal Server Error" });
+        console.error("Error fetching incident history:", error);
+        res.status(500).json({ message: "Internal Server Error" });
     }
 });
 
@@ -616,7 +837,6 @@ app.get('/latest-reports2', async (req, res) => {
         res.status(500).json({ error: `Database query failed: ${err.message}` });
     }
 });
-
 
 //NEW INCOMING 1ST WARNING DETECTION (STORE)
 app.get('/api/face-cover-warnings/:storeID', async (req, res) => {
