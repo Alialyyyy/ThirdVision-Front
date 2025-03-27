@@ -80,10 +80,10 @@ function IncidentReportPanel({ closePanel }) {
         if (!window.confirm("Are you sure you want to delete this record?")) return;
     
         try {
-            const response = await fetch(`http://localhost:5001/api/delete-detection/${detection_ID}`, {
+            const response = await fetch(`${import.meta.env.VITE_API_URL}/api/delete-detection/${detection_ID}`, {
                 method: "DELETE",
-            });            
-    
+            });
+                       
             if (!response.ok) throw new Error("Failed to delete record");
     
             fetchIncidentHistory();

@@ -9,26 +9,27 @@ const StartStopButton = () => {
     const [status, setStatus] = useState("System Ready");
     const terminalRef = useRef(null);
 
-    const { lastMessage } = useWebSocket("ws://localhost:3001", {
+    const { lastMessage } = useWebSocket(import.meta.env.VITE_SOCKET_URL, {
         shouldReconnect: () => true,
     });
-
+    
     useEffect(() => {
         if (lastMessage !== null) {
             setOutput((prev) => [...prev, lastMessage.data]);
-
-            setTimeout(() => {
-                if (terminalRef.current) {
-                    terminalRef.current.scrollTop = terminalRef.current.scrollHeight;
-                }
-            }, 100);
+    
+            if (terminalRef.current) {
+                terminalRef.current.scrollTo({
+                    top: terminalRef.current.scrollHeight,
+                    behavior: "smooth",
+                });
+            }
         }
     }, [lastMessage]);
-
+    
     const handleStart = async () => {
         setStatus("Starting script...");
         try {
-            const res = await fetch("http://localhost:5001/start");
+            const res = await fetch(`${import.meta.env.VITE_API_URL}/start`);
             if (res.ok) {
                 setIsRunning(true);
                 setStatus("Script is running...");
@@ -44,7 +45,7 @@ const StartStopButton = () => {
         setStatus("Stopping script...");
         console.log("Stop request sent...");
 
-        fetch("http://localhost:3001/stop").catch((error) => {
+        fetch(`${import.meta.env.VITE_API_URL}/stop`).catch((error) => {
             console.error("Error stopping script:", error);
         });
 

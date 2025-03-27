@@ -2,14 +2,16 @@ import React, { useEffect } from "react";
 import { io } from "socket.io-client";
 import styles from "./Notification.module.css";
 
-const socket = io("http://localhost:5001");
+const socket = io(import.meta.env.VITE_SOCKET_URL, {
+    transports: ["websocket", "polling"],
+});
 
 function Notification({ setLatestReports, latestReports }) { 
 
     useEffect(() => {
     const fetchLatestReports = async () => {
         try {
-            const response = await fetch("http://localhost:5001/latest-reports");
+            const response = await fetch(`${import.meta.env.VITE_API_URL}/latest-reports`);
             if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
             const data = await response.json();
             setLatestReports(data);  

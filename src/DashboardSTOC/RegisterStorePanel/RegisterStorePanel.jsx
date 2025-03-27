@@ -11,7 +11,7 @@ function RegisterStorePanel({ closePanel }) {
 
     const fetchStoreAccounts = () => {
         setLoading(true);
-        fetch("http://localhost:5001/api/store-accounts")
+        fetch(`${import.meta.env.VITE_API_URL}/api/store-accounts`)
             .then((response) => {
                 if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
                 return response.json();
@@ -23,7 +23,7 @@ function RegisterStorePanel({ closePanel }) {
 
     const handleDelete = async (id) => {
         try {
-            const response = await fetch(`http://localhost:5001/api/delete-store/${id}`, { method: "DELETE" });
+            const response = await fetch(`${import.meta.env.VITE_API_URL}/api/delete-store/${id}`, { method: "DELETE" });
             if (!response.ok) throw new Error(`Failed to delete account. Status: ${response.status}`);
             setStoreAccounts((prev) => prev.filter(entry => entry.store_ID !== id));
         } catch (error) {

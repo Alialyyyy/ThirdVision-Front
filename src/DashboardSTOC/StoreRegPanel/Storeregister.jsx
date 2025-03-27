@@ -41,7 +41,7 @@ function AccountRegistrationPanel({ closePanel }) {
 
     const registerStore = async () => {
         try {
-            const response = await fetch('http://localhost:5001/api/register-store', {
+            const response = await fetch(`${import.meta.env.VITE_API_URL}/api/register-store`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(formData),

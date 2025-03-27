@@ -11,7 +11,7 @@ function PoliceAccs({ closePanel }) {
 
     const fetchPoliceAccounts = () => {
         setLoading(true);
-        fetch("http://localhost:5001/api/police-accounts")
+        fetch(`${import.meta.env.VITE_API_URL}/api/police-accounts`)
             .then((response) => {
                 if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
                 return response.json();
@@ -23,7 +23,7 @@ function PoliceAccs({ closePanel }) {
 
     const handleDelete = async (id) => {
         try {
-            const response = await fetch(`http://localhost:5001/api/delete-police/${id}`, { method: "DELETE" });
+            const response = await fetch(`${import.meta.env.VITE_API_URL}/api/delete-police/${id}`, { method: "DELETE" });
             if (!response.ok) throw new Error(`Failed to delete account. Status: ${response.status}`);
             setPoliceAccounts((prev) => prev.filter(entry => entry.stoc_ID !== id));
         } catch (error) {

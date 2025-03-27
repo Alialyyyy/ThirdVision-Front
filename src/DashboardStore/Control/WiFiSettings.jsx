@@ -7,7 +7,7 @@ const WiFiStatus = () => {
         // Fetch current WiFi SSID when the page loads
         const fetchSSID = async () => {
             try {
-                const res = await fetch('http://localhost:5001/current-wifi');
+                const res = await fetch(`${import.meta.env.VITE_API_URL}/current-wifi`);
                 const text = await res.text();
                 setCurrentSSID(text || "Unknown");
             } catch (error) {

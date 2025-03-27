@@ -12,7 +12,7 @@ function RepCountPanel() {
 
     useEffect(() => {
         const fetchReportCount = () => {
-            fetch("http://localhost:5001/api/history-count")
+            fetch(`${import.meta.env.VITE_API_URL}/api/history-count`)
                 .then((response) => response.json())
                 .then((data) => setCount(data.count))
                 .catch((error) => console.error("Error fetching count:", error));
@@ -27,14 +27,14 @@ function RepCountPanel() {
     
 
     useEffect(() => {
-        fetch("http://localhost:5001/api/reports-per-month")
+        fetch(`${import.meta.env.VITE_API_URL}/api/reports-per-month`)
             .then((response) => response.json())
             .then((data) => setMonthlyData(data))
             .catch((error) => console.error("Error fetching monthly data:", error));
     }, []);
 
     useEffect(() => {
-        fetch("http://localhost:5001/api/reports-by-location")
+        fetch(`${import.meta.env.VITE_API_URL}/api/reports-by-location`)
             .then((response) => {
                 if (!response.ok) {
                     throw new Error(`HTTP error! Status: ${response.status}`);
