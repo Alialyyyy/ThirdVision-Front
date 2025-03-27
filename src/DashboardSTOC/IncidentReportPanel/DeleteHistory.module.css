@@ -68,6 +68,7 @@
     box-sizing: border-box;
     position: relative;
     z-index: 1;
+    text-align: center;
 }
 
 .table th, .table td {

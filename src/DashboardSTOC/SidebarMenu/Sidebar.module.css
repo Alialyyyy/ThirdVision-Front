@@ -1,40 +1,49 @@
 .sidebar {
     position: fixed;
     top: 0;
-    left: 0;
+    left: -350px; 
     width: 350px;
-    height: 100vh;
-    background: #000000;
+    height: 100%;
+    background: #000;
     color: white;
     display: flex;
     flex-direction: column;
     padding: 10px;
-    transition: width 0.3s ease-in-out;
-    overflow: hidden;
-    text-align: center;
-    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.5); 
+    transition: left 0.3s ease-in-out;
+    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.5);
     z-index: 1000;
 }
 
+.sidebar.open {
+    left: 0;
+}
+
 .sidebar.closed {
-    width: 60px;
+    left: -350px;
 }
 
 .toggleButton {
-    display: flex;
-    gap: 10px; 
-    background: black; 
+    position: fixed;
+    top: 15px;
+    left: 15px;
+    background: rgb(0, 0, 0);
     color: white;
     border: none;
     font-size: 20px;
     cursor: pointer;
     padding: 12px;
     transition: background 0.3s ease-in-out;
-    width: 100%;
+    z-index: 1100;
+    border-radius: 5px;
+}
+
+.toggleButton:hover {
+    background: #000000;
 }
 
 .sidebar.closed .toggleButton span {
     display: none;
+    background: rgb(0, 0, 0);
 }
 
 .menu {
@@ -48,6 +57,7 @@
     width: 50px;
     height: 50px;
     margin: 10px;
+    margin-top: 55px;
 }
 
 .title2 {
@@ -55,18 +65,16 @@
     text-align: center;
     font-size: 24px;
     font-weight: bold;
-    margin-bottom: 20px;
 }
 
 .sidebar button {
     display: flex;
     align-items: center;
-    gap: 10px; 
+    gap: 10px;
     background: transparent;
     color: white;
     border: none;
     padding: 12px;
-    text-align: left;
     font-size: 18px;
     cursor: pointer;
     transition: background 0.3s ease-in-out;
@@ -77,14 +85,9 @@
     background: #353535;
 }
 
-.sidebar.closed {
-    width: 60px;
-    background: black; 
-    box-shadow: none;  
-}
-
 .sidebar.closed .menu {
     display: none;
+
 }
 
 .sidebar button:hover {
@@ -96,35 +99,73 @@
     height: 24px;
 }
 
+.logoutButton {
+    margin-top: auto; 
+    background-color: #d9534f; 
+    color: white;
+    border: none;
+    padding: 10px;
+    width: 100%;
+    text-align: left;
+    font-size: 16px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.logoutButton:hover {
+    background-color: #c9302c;
+}
+
+@media (max-width: 1024px) {
+    .sidebar {
+        width: 250px;
+    }
+
+    .sidebar.closed {
+        left: -250px;
+    }
+}
+
+/* Small screens (Mobile devices) */
 @media (max-width: 768px) {
+    .sidebar {
+        width: 220px;
+    }
+
+    .sidebar.closed {
+        left: -220px;
+    }
+
+    .toggleButton {
+        font-size: 18px;
+        padding: 10px;
+    }
+}
+
+/* Extra Small screens */
+@media (max-width: 480px) {
     .sidebar {
         width: 200px;
     }
 
     .sidebar.closed {
-        width: 50px;
+        left: -200px;
     }
 
-    .dashboardContent {
-        margin-left: 200px;
-        width: calc(100% - 200px);
+    .toggleButton {
+        font-size: 16px;
+        padding: 8px;
     }
 
-    .sidebar.closed + .dashboardContent {
-        margin-left: 50px;
-        width: calc(100% - 50px);
+    .sidebar button {
+        font-size: 16px;
+        padding: 10px;
     }
-}
 
-@media (max-width: 480px) {
-    .icon-button {
-      font-size: 14px;
-      padding: 8px 12px;
-      gap: 6px;
-    }
-    
     .icon {
-      width: 16px;
-      height: 16px;
+        width: 20px;
+        height: 20px;
     }
 }

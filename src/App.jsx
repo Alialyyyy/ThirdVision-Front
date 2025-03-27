@@ -22,6 +22,13 @@ function Main() {
   const location = useLocation();
   const showNavbar = ['/','/About','/Founders'].includes(location.pathname);
 
+  useEffect(() => {
+    fetch(import.meta.env.VITE_API_URL + "/test-route")
+      .then((response) => response.json())
+      .then((data) => console.log(data))
+      .catch((error) => console.error("Error:", error));
+  }, []);
+  
   return(
       <> 
       {showNavbar && <Navbar/>}

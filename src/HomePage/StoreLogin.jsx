@@ -38,46 +38,48 @@ function StoreAccountLogin({onClose}) {
     };
 
     return (
-        <div className={styles.container}>
-        <button className={styles.closeButton} onClick={onClose}>✖</button>
-            <h1 className={styles.title}>Store Account Login</h1>
-            <form className={styles.form} onSubmit={handleLogin}>
-                <label className={styles.label}>
-                    Enter username:
-                    <input 
-                        type="text" 
-                        className={styles.input} 
-                        placeholder="Username" 
-                        value={storeID}
-                        onChange={(e) => setStoreID(e.target.value)}
-                        required
-                    />
-                </label>
-                <label className={styles.label}>
-                    Enter password:
-                    <div className={styles.passcodeWrapper}>
-                        <input
-                            type={showPasscode ? 'text' : 'password'}
-                            className={styles.input}
-                            placeholder="Password"
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
+        <div className={styles.modalOverlay}>
+            <div className={styles.container}>
+                <button className={styles.closeButton} onClick={onClose}>✖</button>
+                <h1 className={styles.title}>Store Account Login</h1>
+                <form className={styles.form} onSubmit={handleLogin}>
+                    <label className={styles.label}>
+                        Enter username:
+                        <input 
+                            type="text" 
+                            className={styles.input} 
+                            placeholder="Username" 
+                            value={storeID}
+                            onChange={(e) => setStoreID(e.target.value)}
                             required
                         />
-                        <button
-                            type="button"
-                            className={styles.toggleButton}
-                            onClick={togglePasscodeVisibility}
-                        >
-                            {showPasscode ? 'Hide' : 'Show'}
-                        </button>
-                    </div>
-                </label>
-                {errorMessage && <p className={styles.error}>{errorMessage}</p>}
-                <button type="submit" className={styles.submitButton}>
-                    Login
-                </button>
-            </form>
+                    </label>
+                    <label className={styles.label}>
+                        Enter password:
+                        <div className={styles.passcodeWrapper}>
+                            <input
+                                type={showPasscode ? 'text' : 'password'}
+                                className={styles.input}
+                                placeholder="Password"
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                                required
+                            />
+                            <button
+                                type="button"
+                                className={styles.toggleButton}
+                                onClick={togglePasscodeVisibility}
+                            >
+                                {showPasscode ? 'Hide' : 'Show'}
+                            </button>
+                        </div>
+                    </label>
+                    {errorMessage && <p className={styles.error}>{errorMessage}</p>}
+                    <button type="submit" className={styles.submitButton}>
+                        Login
+                    </button>
+                </form>
+            </div>
         </div>
     );
 }

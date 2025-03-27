@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import eye2 from '../assets/eye2.png';
 import './Navbar.css';
 
 function Navbar() {
@@ -25,7 +26,7 @@ function Navbar() {
     <nav className="navbar">
         <div className="navbar-container">
             <Link to="/" className="navbar-logo" onClick={closeMobileMenu}>
-                ThirdVision <i className="fab fa-typo3" />
+            <img src={eye2} className="img"/> ThirdVision <i className="fab fa-typo3" />
             </Link>
             <div className="menu-icon" onClick={() => setIsMobile(!isMobile)}>
                 <i className={isMobile ? 'fa fa-times' : 'fa fa-bars'} />

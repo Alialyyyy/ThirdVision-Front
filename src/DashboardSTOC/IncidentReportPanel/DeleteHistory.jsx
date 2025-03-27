@@ -64,7 +64,7 @@ function DeleteHistory({ closePanel }) {
                         </thead>
                         <tbody>
                             {history.length > 0 ? (
-                                history.map((entry) => (
+                                history.slice().reverse().map((entry) => (
                                     <tr key={entry.detection_ID}>
                                         <td>{formatDate(entry.date_deleted)}</td>
                                         <td>{formatTime(entry.time_deleted)}</td>

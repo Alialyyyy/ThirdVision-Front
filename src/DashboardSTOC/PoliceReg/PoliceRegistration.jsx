@@ -7,7 +7,20 @@ function PoliceRegPanel({ closePanel }) {
         password: "",
         stoc_contact: "",
         stoc_email: "",
+        stoc_location: "",
     });
+
+    const locations = [
+        'Putatan',
+        'Tunasan',
+        'Ayala-Alabang',
+        'Alabang',
+        'Poblacion',
+        'Cupang',
+        'Sucat',
+        'Bayanan',
+        'Buli',
+    ];
 
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -27,8 +40,8 @@ function PoliceRegPanel({ closePanel }) {
 
             if (response.ok) {
                 alert("✅ Police account registered successfully!");
-                closePanel(); // ✅ Close the panel on success
-                setFormData({ username: "", password: "", stoc_contact: "", stoc_email: "" });
+                closePanel();
+                setFormData({ username: "", password: "", stoc_contact: "", stoc_email: "", stoc_location: "" });
             } else {
                 alert(`❌ Error: ${result.error}`);
             }
@@ -52,6 +65,14 @@ function PoliceRegPanel({ closePanel }) {
                 <input type="password" name="password" placeholder="Password" value={formData.password} onChange={handleChange} required />
                 <input type="text" name="stoc_contact" placeholder="Contact Number" value={formData.stoc_contact} onChange={handleChange} required />
                 <input type="email" name="stoc_email" placeholder="Email Address" value={formData.stoc_email} onChange={handleChange} required />
+                <select name="location" value={formData.stoc_location} onChange={handleChange} required>
+                            <option value="" disabled>Select Barangay</option>
+                            {locations.map((location) => (
+                                <option key={location} value={location}>
+                                    {location}
+                                </option>
+                            ))}
+                </select>
 
                 <button className={styles.submitbtn} type="submit">
                     Submit

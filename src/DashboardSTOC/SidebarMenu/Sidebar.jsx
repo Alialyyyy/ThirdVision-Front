@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import styles from "./Sidebar.module.css";
 
 import add from "../../assets/add.png";
@@ -7,17 +8,25 @@ import registered from "../../assets/customer.png";
 import bin from "../../assets/bin.png";
 import addAdmin from "../../assets/addAdmin.png";
 import policeBadge from "../../assets/policeBadge.png";
+import logoutIcon from "../../assets/logoutIcon.png";
 
 function Sidebar({ setActivePanel }) {
     const [isOpen, setIsOpen] = useState(true);
+    const navigate = useNavigate();
+
+    const handleLogout = () => {
+        navigate("/"); 
+    };
 
     return (
-        <div className={`${styles.sidebar} ${isOpen ? styles.open : styles.closed}`}>
+        <>
+            {/* Sidebar Toggle Button (Fixed) */}
             <button className={styles.toggleButton} onClick={() => setIsOpen(!isOpen)}>
                 ☰ <span>ThirdVision</span>
             </button>
-    
-            {isOpen && (
+
+            {/* Sidebar Panel */}
+            <div className={`${styles.sidebar} ${isOpen ? styles.open : styles.closed}`}>
                 <div className={styles.menu}>
                     <img src={policeBadge} className={styles.logo} />
                     <h3 className={styles.title2}>POLICE STATION</h3>
@@ -40,10 +49,14 @@ function Sidebar({ setActivePanel }) {
                     <button onClick={() => setActivePanel("DeleteHistory")}>
                         <img src={bin} className={styles.icon} /> Delete History
                     </button>
-                    
+
+                    {/* Logout Button */}
+                    <button className={styles.logoutButton} onClick={handleLogout}>
+                        <img src={logoutIcon} className={styles.icon} /> Logout
+                    </button>
                 </div>
-            )}
-        </div>
+            </div>
+        </>
     );
 }    
 

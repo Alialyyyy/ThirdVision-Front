@@ -1,5 +1,5 @@
 .navbar {
-  background: rgb(51, 66, 81);
+  background: rgb(21, 28, 36);
   backdrop-filter: blur(30px);
   box-shadow: 0px 0px 30px rgba(0, 0, 0, 0);
   height: 60px; 
@@ -27,9 +27,15 @@
   color: #fff;
   cursor: pointer;
   text-decoration: none;
-  font-size: 2rem;
+  font-size: 1.6rem;
   display: flex;
   align-items: center;
+  font-family: monospace;
+}
+
+.img{
+  width: 35px;
+  gap: 3px;
 }
 
 .fa-typo3 {

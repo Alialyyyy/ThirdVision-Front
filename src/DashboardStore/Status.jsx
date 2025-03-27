@@ -1,11 +1,9 @@
 import styles from './Status.module.css';
 import React, { useState, useEffect } from 'react';
 import ReportLineGraph from "./ReportLineGraph.jsx";
-import IncidentHistory from './IncidentHistory.jsx';
-import DeleteHistory from './DeletedHistory.jsx';
 import Notification from "./NotifAlert/Notification.jsx";
 import PopUpNotif from "./NotifAlert/PopupNotif.jsx";
-import EventLog from './NotifAlert/EventLog.jsx';
+import StartStopButton from './Control/StartStopButton.jsx';
 
 function Status({ storeID, isLoggedIn }) {
     const [isOpen, setIsOpen] = useState(false);
@@ -50,51 +48,17 @@ function Status({ storeID, isLoggedIn }) {
         return () => clearInterval(intervalId);
     }, []);
 
-    function formatTime() {
-        let hours = time.getHours();
-        const mins = time.getMinutes();
-        const secs = time.getSeconds();
-        const merid = hours >= 12 ? "PM" : "AM";
-
-        hours = hours % 12 || 12;
-
-        return `${hours}:${mins}:${secs} ${merid}`;
-    }
-
-    function formatDate() {
-        const currentDate = new Date();
-        const monthNames = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN",
-                            "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"];
-        const month = monthNames[currentDate.getMonth()];
-        const date = currentDate.getDate();
-        return `${month} ${date}, `;
-    }
 
     return (
         <>
             <div className={styles.MainPanel}>
                 {/* ✅ Row 1 - Event Section */}
                 <div className={styles.event}>
-                    <EventLog/>
                     <Notification setLatestReports={setLatestReports} latestReports={latestReports} />
                     <PopUpNotif latestReports={latestReports} />
+                    <StartStopButton/>
                 </div>
-
-                {/* ✅ Row 2 - Alarm Section 
-                <div className={styles.alarm}>
-                    <p className={styles.reportCount}>Report Count</p>
-                    <p className={styles.reportNum}>{count}</p>
-                    <button className={styles.inci} onClick={() => setIsOpen(true)}>Incident Records</button>
-                    <DeleteHistory/>
-                </div>*/}
             </div>
-
-            <IncidentHistory 
-                isOpen={isOpen} 
-                onClose={() => setIsOpen(false)} 
-                storeID={storeID}
-                onHistoryUpdate={(count) => setCount(count)}
-            />
         </>
     );
 }

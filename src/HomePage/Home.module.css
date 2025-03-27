@@ -1,39 +1,62 @@
+/* ✅ Root Variables */
 :root {
-  --primary-color: #5c9ae0;
-  --secondary-color: #4998de;
-  --text-color: #030236;
+  --text-color: #ffffff;
   --background-color: #fff;
   --hover-color: #ff3333;
-  --modal-background: rgba(0, 0, 0, 0.5);
+  --modal-background: rgba(0, 0, 0, 0.11);
 }
 
+/* ✅ Full-Screen Background */
 .homeBg {
-  height: 90vh;
+  height: 100vh;
+  width: 100%;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   margin: 0;
-  padding: 0 20px;
-  background: rgb(255, 255, 255);
+  padding: 0;
+  
+  /* ✅ Background Image */
+  background: url("../assets/mainbg.jfif") no-repeat center center/cover;
+  position: relative;
 }
 
+/* ✅ Dark Overlay for Opacity Control */
+.homeBg::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6); 
+}
+
+/* ✅ Ensure Content is Above the Overlay */
+.homeBg > * {
+  position: relative;
+  z-index: 2;
+}
+
+/* ✅ Title & Text Styling */
 .homeBg > h1 {
   color: var(--text-color);
-  font-size: clamp(1.5rem, 8vw, 4.8rem);
-  margin: 0;
+  font-size: clamp(2rem, 8vw, 4.8rem);
   text-align: center;
+  font-weight: bold;
+  font-family: monospace;
 }
 
 .homeBg > p {
   color: var(--text-color);
   font-size: clamp(1rem, 4vw, 2rem);
-  font-family: 'Roboto, Trebuchet MS', Arial, sans-serif;
   text-align: center;
   max-width: 80%;
   margin: 20px 0;
 }
 
+/* ✅ Buttons Container */
 .containerStyle {
   display: flex;
   justify-content: center;
@@ -43,25 +66,26 @@
   margin: 5% auto;
 }
 
+/* ✅ Button Icons */
 .usericon {
-  width: 110px;
-  margin-bottom: 10px;
+  width: 45px;
 }
 
+/* ✅ Button Text */
 .pstyle {
-  font-size: 20px;
-  font-weight: bolder;
-  font-family: Roboto ;
+  font-size: 15px;
+  font-family: Roboto;
 }
 
+/* ✅ Buttons */
 .Storereg {
-  border: 1px solid rgba(0, 0, 0, 0.336);
+  border: 1px solid rgba(0, 0, 0, 0.568);
   border-radius: 15px;
-  box-shadow: 5px 5px 8px hsl(0, 82%, 2%);
-  padding: 30px;
+  box-shadow: 5px 5px 8px rgba(0, 0, 0, 0.99);
+  padding: 5px;
   width: 350px;
-  background:rgb(51, 66, 81);
-  color: rgb(255, 255, 255);
+  background: rgba(33, 40, 48, 0.85); 
+  color: rgb(128, 128, 128);
   text-align: center;
   font-family: 'Trebuchet MS', Arial, sans-serif;
   font-size: 25px;
@@ -72,9 +96,13 @@
 
 .Storereg:hover {
   transform: scale(1.05);
+  background: rgba(32, 53, 73, 0.9);
+  color: rgb(255, 255, 255);
+  border: none;
 }
 
-.modal-overlay {
+/* ✅ Modal Styling */
+.modalOverlay {
   position: fixed;
   top: 0;
   left: 0;
@@ -87,7 +115,7 @@
   z-index: 999;
 }
 
-.modal-content {
+.modalContent {
   background-color: var(--background-color);
   padding: 20px;
   border-radius: 10px;
@@ -97,7 +125,8 @@
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
-.close-btn {
+/* ✅ Close Button */
+.closeBtn {
   position: absolute;
   top: 10px;
   right: 10px;
@@ -109,19 +138,23 @@
   cursor: pointer;
 }
 
-.close-btn:hover {
+.closeBtn:hover {
   background-color: var(--hover-color);
 }
 
+/* ✅ RESPONSIVENESS */
 @media (max-width: 768px) {
   .homeBg > h1 {
       font-size: 2.5rem;
   }
+
   .homeBg > p {
-      font-size: 1rem;
+      font-size: 1.2rem;
   }
+
   .Storereg {
       width: 80%;
+      padding: 20px;
   }
 }
 
@@ -129,10 +162,17 @@
   .homeBg > h1 {
       font-size: 2rem;
   }
+
   .homeBg > p {
-      font-size: 0.875rem;
+      font-size: 1rem;
   }
+
   .Storereg {
       width: 90%;
+      padding: 15px;
+  }
+
+  .usericon {
+      width: 80px;
   }
 }

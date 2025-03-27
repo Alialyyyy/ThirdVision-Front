@@ -1,7 +1,6 @@
 import React, { useEffect } from "react";
 import { io } from "socket.io-client";
 import styles from "./Notification.module.css";
-import eye from "../../assets/eye.png";
 
 const socket = io("http://localhost:5001");
 
@@ -13,7 +12,7 @@ function Notification({ setLatestReports, latestReports }) {
             const response = await fetch("http://localhost:5001/latest-reports2");
             if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
             const data = await response.json();
-            setLatestReports(data);  
+            setLatestReports(data.slice(0, 1));  
         } catch (error) {
             console.error("Error fetching latest reports:", error);
         }
@@ -28,7 +27,7 @@ function Notification({ setLatestReports, latestReports }) {
     useEffect(() => {
         socket.on("new-detection", (newReport) => {
             console.log("🚨 New detection received:", newReport);
-            setLatestReports((prevReports) => [newReport, ...prevReports].slice(0, 2));
+            setLatestReports([newReport]);  
         });
 
         return () => socket.off("new-detection");
@@ -58,15 +57,13 @@ function Notification({ setLatestReports, latestReports }) {
 
     return (
         <div className={styles.notificationPanel}>
-            <h1>Latest Reports</h1>
-            {latestReports.map((report, index) => (
-                <div key={index} className={styles.repCardPanel}>
-                    <h3><strong>{report.threat_level}</strong></h3>
-                    <h3><strong>{report.detection_type}</strong></h3>
-                    <h1><strong>{formatDate(report.date)} {formatTime(report.time)}</strong></h1>
-                    <button className={styles.reportImage} onClick={openImage}><strong>VIEW THREAT</strong></button>
-                </div>
-            ))}
+            <h1>Latest Report</h1>
+            <div className={styles.repCardPanel}>
+                <h3><strong>{latestReports[0].threat_level} {latestReports[0].detection_type}</strong></h3>
+                <h2><strong>{latestReports[0].store_address} {latestReports[0].store_location}</strong></h2>
+                <h1><strong>{formatDate(latestReports[0].date)} {formatTime(latestReports[0].time)}</strong></h1>
+                <button className={styles.reportImage} onClick={openImage}><strong>VIEW THREAT</strong></button>
+            </div>
         </div>
     );
 }

@@ -1,4 +1,4 @@
-import { useRef, useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import EditIncidentPanel from './EditPanel.jsx';
 import IR from './IncidentHistory.module.css';
 import { FaEye } from 'react-icons/fa';
@@ -6,7 +6,8 @@ import ThreatDropdown from './ThreatDropdown.jsx';
 import TypeDropdown from './TypeDropdown.jsx';
 import dropdown from './Dropdown.module.css';
 
-function IncidentHistory({ onClose, isOpen, storeID, onHistoryUpdate }) {
+function IncidentHistory({ closePanel, storeID }) {
+    const [time, setTime] = useState(new Date());
     const [history, setHistory] = useState([]); 
     const [loading, setLoading] = useState(false); 
     const [search, setSearch] = useState(''); 
@@ -14,8 +15,17 @@ function IncidentHistory({ onClose, isOpen, storeID, onHistoryUpdate }) {
     const [selectedThreatLevel, setSelectedThreatlevel] = useState([]); 
     const [selectedType, setSelectedType] = useState([]); 
 
+
     useEffect(() => {
-        if (!isOpen || !storeID) return;
+        const intervalId = setInterval(() => {
+            setTime(new Date()); 
+        }, 1000);
+
+        return () => clearInterval(intervalId);
+    }, []);
+
+    useEffect(() => {
+        if (!storeID) return;
 
         setLoading(true);
         fetch(`http://localhost:5001/api/incident-history/${storeID}`)
@@ -27,8 +37,61 @@ function IncidentHistory({ onClose, isOpen, storeID, onHistoryUpdate }) {
             })
             .catch(error => console.error('Error fetching incident history:', error))
             .finally(() => setLoading(false));
-    }, [isOpen, storeID, selectedThreatLevel, selectedType]); 
+    }, [storeID, selectedThreatLevel, selectedType]); 
 
+       
+    const fetchIncidentHistory = async () => {
+        setLoading(true);
+        
+        const queryParams = new URLSearchParams();
+    
+        if (selectedLocations.length > 0) {
+            queryParams.append("searchLocations", selectedLocations.join(","));
+        }
+        if (selectedThreatLevel.length > 0) {
+            queryParams.append("searchThreatLevels", selectedThreatLevel.join(","));
+        }
+        if (selectedType.length > 0) {
+            queryParams.append("searchType", selectedType.join(","));
+        }
+    
+        const queryString = queryParams.toString();
+        const url = `http://localhost:5001/api/incident-history${queryString ? `?${queryString}` : ""}`;
+    
+        try {
+            const response = await fetch(url);
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            const data = await response.json();
+            setHistory(data);
+        } catch (error) {
+            console.error("Error fetching data:", error);
+        } finally {
+            setLoading(false);
+        }
+        };
+
+
+        const exportToExcel = async () => {
+        try {
+            const response = await fetch("http://localhost:5001/export-excel");
+            if (!response.ok) throw new Error("Failed to export data");
+
+            const blob = await response.blob();
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = "IncidentHistory.xlsx";
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+        } catch (error) {
+            console.error("Export failed:", error);
+        }
+    };
+
+        
     const handleSearchChange = (event) => {
         setSearch(event.target.value);
     };
@@ -62,32 +125,6 @@ function IncidentHistory({ onClose, isOpen, storeID, onHistoryUpdate }) {
 
         window.open(newUrl, '_blank', 'noopener,noreferrer'); 
     };
-    
-    const exportToExcel = () => {
-            if (filteredHistory.length === 0) {
-                alert("No data to export!");
-                return;
-            }
-    
-            const currentDate = new Date().toISOString().split("T")[0];
-        
-            const dataToExport = filteredHistory.map(entry => ({
-                "ID": entry.shared_detection_id,
-                "Date": formatDate(entry.date),
-                "Time": formatTime(entry.time),
-                "Threat Level": entry.threat_level,
-                "Type": entry.detection_type
-            }));
-        
-            const worksheet = XLSX.utils.json_to_sheet(dataToExport);
-            const workbook = XLSX.utils.book_new();
-            XLSX.utils.book_append_sheet(workbook, worksheet, "IncidentHistory");
-        
-            const excelBuffer = XLSX.write(workbook, { bookType: "xlsx", type: "array" });
-        
-            const data = new Blob([excelBuffer], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" });
-            saveAs(data, `Incident_Report_${currentDate}.xlsx`);
-        };    
 
     const formatDate = (dateString) => {
         const date = new Date(dateString);
@@ -130,11 +167,9 @@ function IncidentHistory({ onClose, isOpen, storeID, onHistoryUpdate }) {
         return matchesSearch && matchesThreatLevel && matchesType;
     });
 
-    if (!isOpen) return null;
-
     return (
         <div className={IR.floatingPanel}>
-            <button className={IR.closeButton} onClick={onClose}>✖</button>
+            <button className={IR.closeButton} onClick={closePanel}>✖</button>
             <h2 className={IR.title}>Incident History</h2>
             <div className={IR.searchContainer}>            
                 <input
@@ -153,7 +188,7 @@ function IncidentHistory({ onClose, isOpen, storeID, onHistoryUpdate }) {
                 <TypeDropdown onSelect={setSelectedType}/>
             </div>
             {loading ? (
-                <p className={IR.loading}>Loading...</p>
+                <p className={IR.loading}>Loading... {time.toLocaleTimeString()}</p>
             ) : (
                 <div  className={IR.tableContainer}>
                     <table className={IR.table}>
@@ -169,8 +204,8 @@ function IncidentHistory({ onClose, isOpen, storeID, onHistoryUpdate }) {
                             </tr>
                         </thead>
                         <tbody>
-                            {filteredHistory.length > 0 ? (
-                                filteredHistory.map((entry) => (
+                            {history.length > 0 ? (
+                                filteredHistory.slice().reverse().map((entry) => (
                                     <tr key={entry.detection_ID}>
                                         <td>{entry.shared_detection_id}</td>
                                         <td>

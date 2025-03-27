@@ -18,27 +18,33 @@
     box-shadow: 0px 4px 10px rgb(0, 0, 0);
     border-radius: 10px;
     z-index: 9999;
-    width: 90%;
+    width: 95%;
+    max-width: 1200px; 
     height: auto;
     display: flex;
     flex-direction: column;
     text-align: left;
+    gap: 15px;
+    overflow: hidden; 
 }
 
 .searchContainer {
-    display: flex; 
-    align-items: center; 
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap; 
+    gap: 10px;
+    width: 40%;
 }
 
 .exportButton {
-    background-color: #34a853; 
+    background-color: #34a853;
     color: white;
     border: none;
     padding: 8px 15px;
     cursor: pointer;
     font-size: 14px;
     border-radius: 5px;
-    margin-left: 10px;
 }
 
 .exportButton:hover {
@@ -46,14 +52,13 @@
 }
 
 .searchInput {
-    width: 40%; 
-    padding: 10px; 
-    margin: 0;
-    border: 1px solid #ccc; 
-    border-radius: 4px; 
-    font-size: 12px; 
+    flex: 1;
+    padding: 10px;
+    min-width: 200px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    transition: border-color 0.3s; 
 }
 
 .searchInput:focus {
@@ -63,10 +68,9 @@
 }
 
 .tableContainer {
-    max-height: 300px; 
-    overflow-y: auto;  
-    overflow-x: auto; 
-    border: none;
+    max-height: 275px;
+    overflow-y: auto;
+    overflow-x: auto;
     width: 100%;
 }
 
@@ -74,16 +78,17 @@
     position: absolute;
     top: 10px;
     right: 10px;
-    background: rgb(255, 0, 0);
-    color: rgb(255, 255, 255);
+    background: red;
+    color: white;
     border: none;
-    padding: 3px 9px;
+    padding: 5px 10px;
     cursor: pointer;
     border-radius: 5px;
 }
 
 .loading{
     color: #00000059;
+    text-align: center;
 }
 
 .closeButton:hover {
@@ -91,27 +96,26 @@
 }
 
 .table {
-    width: 100%; 
+    width: 100%;
     border-collapse: collapse;
-    box-sizing: border-box;
-    position: relative;
-    z-index: 1;
+    table-layout: fixed;
 }
 
 .table th, .table td {
     border: 0.05px solid #0000003a;
     padding: 5px;
-    text-align: left;
     font-size: 12px;
     color: #000000;
-    text-overflow: ellipsis;
+    text-align: center;
     white-space: nowrap;
     overflow: hidden;
-    
+    text-overflow: ellipsis; 
+    max-width: 100px;
 }
 
 .table th {
-    background-color: #00000042;
+    background-color: #eeeeee;
+    padding: 8px;
     text-align: center;
     position: sticky; 
     top: 0; 
@@ -120,7 +124,6 @@
 
 .table thead {
     position: sticky;
-    top: 0;
     background: white;  
     z-index: 1;
 }
@@ -156,9 +159,20 @@
 }
 
 .dropdownContainer {
-    display: flex; 
-    gap: 10px;
+    display: flex;
     align-items: center;
+    justify-content: flex-start;
+    gap: 10px;
+    width: 100%;
+    flex-wrap: nowrap; 
+    overflow-x: auto;
+    padding-bottom: 5px;
+}
+
+.dropdownContainer > * {
+    flex: 1; 
+    min-width: 150px;
+    max-width: 200px;
 }
 
 .table th:nth-child(1), .table td:nth-child(1) {
@@ -166,4 +180,98 @@
 }
 .table th:nth-child(2), .table td:nth-child(2) {
     width: 20%; 
+}
+
+.eyeButton,
+.deleteButton {
+    padding: 5px 8px;
+    font-size: 12px;
+}
+
+@media (max-width: 768px) {
+    .floatingPanel {
+        width: 95%;
+        height: auto;
+        max-width: 600px;
+    }
+
+    .searchContainer {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .tableContainer {
+        max-height: 250px;
+    }
+
+    .table th, .table td {
+        font-size: 12px;
+        padding: 6px;
+    }
+
+    .exportButton {
+        width: 100%;
+    }
+
+    .eyeButton,
+    .deleteButton {
+        font-size: 10px;
+    }
+}
+
+@media (max-width: 480px) {
+    .floatingPanel {
+        width: 100%;
+        max-width: 100%;
+        padding: 15px;
+    }
+
+    .title {
+        font-size: 22px;
+        text-align: center;
+    }
+
+    .searchInput {
+        font-size: 12px;
+    }
+
+    .table th, .table td {
+        font-size: 10px;
+        padding: 4px;
+    }
+
+    .exportButton {
+        font-size: 12px;
+    }
+
+    .eyeButton,
+    .deleteButton {
+        font-size: 8px;
+        padding: 3px 5px;
+    }
+
+}
+
+@media screen and (max-width: 768px) {
+    .dropdownContainer {
+        gap: 5px;
+        justify-content: space-between;
+    }
+
+    .dropdownContainer > * {
+        min-width: 130px;
+        max-width: 160px;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .dropdownContainer {
+        justify-content: flex-start;
+        overflow-x: auto;
+    }
+
+    .dropdownContainer > * {
+        min-width: 110px;
+        max-width: 140px;
+    }
 }

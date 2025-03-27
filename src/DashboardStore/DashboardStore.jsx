@@ -5,17 +5,13 @@ import Status from './Status.jsx';
 import { useState, useEffect } from 'react';
 import IncidentHistory from './IncidentHistory.jsx';
 import DeletedHistory from './DeletedHistory.jsx';
+import EditHistory from './EditHistory.jsx';
 import Sidebar from './Sidebar/Sidebar.jsx';
 
 function DashboardStore() {
     const [activePanel, setActivePanel] = useState(null);
     const [storeID, setStoreID] = useState('');
     const navigate = useNavigate();
-
-    const handleLogout = () => {
-        localStorage.removeItem('store_ID'); 
-        navigate("/");
-    }
 
     useEffect(() => {
         const storedStoreID = localStorage.getItem('store_ID'); 
@@ -34,21 +30,15 @@ function DashboardStore() {
 
             {/* Dashboard Content */}
             <div className={styles.dashboardContent}>
-                {/* Display selected sidebar panel */}
-                {activePanel === "DashboardStore" && (<IncidentHistory closePanel={() => setActivePanel(null)} />)}
-                {activePanel === "DashboardStore" && (<EditHistory closePanel={() => setActivePanel(null)} />)}
-                {activePanel === "DashboardStore" && (<DeletedHistory closePanel={() => setActivePanel(null)} />)}                                                      
+            {activePanel === "IncidentHistory" && <IncidentHistory storeID={storeID} closePanel={() => setActivePanel(null)} /> }
+            {activePanel === "EditHistory" && <EditHistory storeID={storeID} closePanel={() => setActivePanel(null)} />}
+            {activePanel === "DeletedHistory" && <DeletedHistory closePanel={() => setActivePanel(null)} />}
 
                 {/* Always Visible on Dashboard */}
             <div>
                 <div className={styles.dashboardContainer}>
                     <LiveStream storeID={storeID} />
                     <Status storeID={storeID} />
-                </div>
-                <div>
-                    <button onClick={handleLogout} className={styles.logoutButton}>
-                        Logout
-                    </button>
                 </div>
             </div>
         </div>

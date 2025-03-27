@@ -1,7 +1,6 @@
 import React, { useEffect } from "react";
 import { io } from "socket.io-client";
 import styles from "./Notification.module.css";
-import eye from "../../assets/eye.png";
 
 const socket = io("http://localhost:5001");
 
@@ -20,7 +19,7 @@ function Notification({ setLatestReports, latestReports }) {
     };
     
     fetchLatestReports();
-    const interval = setInterval(fetchLatestReports, 3000); // ✅ Refresh every 3s
+    const interval = setInterval(fetchLatestReports, 3000); 
 
     return () => clearInterval(interval);
 }, [setLatestReports]);
@@ -28,7 +27,7 @@ function Notification({ setLatestReports, latestReports }) {
     useEffect(() => {
         socket.on("new-detection", (newReport) => {
             console.log("🚨 New detection received:", newReport);
-            setLatestReports((prevReports) => [newReport, ...prevReports].slice(0, 2));
+            setLatestReports((prevReports) => [newReport, ...prevReports].slice(1));
         });
 
         return () => socket.off("new-detection");

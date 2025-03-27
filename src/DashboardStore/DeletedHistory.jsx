@@ -73,7 +73,7 @@ function DeleteHistory({storeID, closePanel}) {
         <div>
 
                 <div className={IR.floatingPanel}>
-                <button className={styles.closeButton} onClick={closePanel}>✖</button>
+                <button className={IR.closeButton} onClick={closePanel}>✖</button>
                     <h2 className={IR.title}>Deleted Reports</h2>
 
                     {loading ? (
