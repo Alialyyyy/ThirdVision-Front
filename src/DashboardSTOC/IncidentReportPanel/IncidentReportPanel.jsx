@@ -1,8 +1,6 @@
 import { useState, useEffect } from 'react';
 import { FaEye } from 'react-icons/fa';
 import { io } from "socket.io-client";
-import * as XLSX from "xlsx";
-import { saveAs } from "file-saver";
 import IR from './IncidentReport.module.css';
 import LocationDropdown from './LocationDropdown.jsx';
 import ThreatDropdown from './ThreatDropdown.jsx';
