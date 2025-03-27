@@ -28,7 +28,7 @@ function IncidentHistory({ closePanel, storeID }) {
         if (!storeID) return;
 
         setLoading(true);
-        fetch(`http://localhost:5001/api/incident-history/${storeID}`)
+        fetch(`${import.meta.env.VITE_API_URL}/api/incident-history/${storeID}`)
             .then(response => response.json())
             .then(data => {
                 console.log('Fetched incident history:', data);
@@ -56,7 +56,7 @@ function IncidentHistory({ closePanel, storeID }) {
         }
     
         const queryString = queryParams.toString();
-        const url = `http://localhost:5001/api/incident-history${queryString ? `?${queryString}` : ""}`;
+        const url = `${import.meta.env.VITE_API_URL}/api/incident-history${queryString ? `?${queryString}` : ""}`;
     
         try {
             const response = await fetch(url);
@@ -75,7 +75,7 @@ function IncidentHistory({ closePanel, storeID }) {
 
         const exportToExcel = async () => {
         try {
-            const response = await fetch("http://localhost:5001/export-excel");
+            const response = await fetch(`${import.meta.env.VITE_API_URL}/export-excel`);
             if (!response.ok) throw new Error("Failed to export data");
 
             const blob = await response.blob();
@@ -100,7 +100,7 @@ function IncidentHistory({ closePanel, storeID }) {
         if (!window.confirm("Are you sure you want to delete this record?")) return;
     
         try {
-            const response = await fetch(`http://localhost:5001/api/delete-detection2/${storeID}/${detection_ID}`, {
+            const response = await fetch(`${import.meta.env.VITE_API_URL}/api/delete-detection2/${storeID}/${detection_ID}`, {
                 method: "DELETE",
             });
     

@@ -8,7 +8,7 @@ function DeleteHistory({storeID, closePanel}) {
 
         const fetchDetectionHistory = async () => {
             try {
-                const response = await fetch(`http://localhost:5001/api/incident-history2/${storeID}`);        
+                const response = await fetch(`${import.meta.env.VITE_API_URL}/api/incident-history2/${storeID}`);        
                 const data = await response.json();
                 setFilteredHistory(data);
             } catch (error) {
@@ -18,7 +18,7 @@ function DeleteHistory({storeID, closePanel}) {
     
         const fetchDeleteHistory = async () => {
             try {
-                const response = await fetch(`http://localhost:5001/api/deleted-history2/${storeID}`);
+                const response = await fetch(`${import.meta.env.VITE_API_URL}/api/deleted-history2/${storeID}`);
                 if (!response.ok) throw new Error("Failed to fetch delete history");
         
                 const data = await response.json();

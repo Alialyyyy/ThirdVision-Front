@@ -15,7 +15,7 @@ function EditHistory ({ onClose, isOpen }){
 
     useEffect(() => {
         setLoading(true); 
-                fetch('http://localhost:5001/api/edit-history')
+                fetch(`${import.meta.env.VITE_API_URL}/api/edit-history`)
         .then(response => response.json())
         .then(data => setHistory(data))
         .catch(error => console.error('Error fetching data:', error))

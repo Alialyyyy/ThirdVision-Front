@@ -14,7 +14,7 @@ function Status({ storeID, isLoggedIn }) {
     useEffect(() => {
         if (storeID) {
             console.log("Fetching count for storeID:", storeID);
-            fetch(`http://localhost:5001/api/history-count2/${storeID}`)
+            fetch(`${import.meta.env.VITE_API_URL}/api/history-count2/${storeID}`)
                 .then(response => response.json())
                 .then(data => {
                     setCount(data.count);
@@ -28,7 +28,7 @@ function Status({ storeID, isLoggedIn }) {
 
         const fetchReportData = async () => {
             try {
-                const response = await fetch(`http://localhost:5001/api/report-count-per-month/${storeID}`);
+                const response = await fetch(`${import.meta.env.VITE_API_URL}/api/report-count-per-month/${storeID}`);
                 if (!response.ok) throw new Error("Failed to fetch data");
                 const data = await response.json();
                 setReportData(data);

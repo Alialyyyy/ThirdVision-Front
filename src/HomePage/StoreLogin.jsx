@@ -17,7 +17,7 @@ function StoreAccountLogin({onClose}) {
         e.preventDefault();
     
         try {
-            const response = await fetch('http://localhost:5001/api/login2', {
+            const response = await fetch(`${import.meta.env.VITE_API_URL}/api/login2`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ username: storeID, password }) 
@@ -26,7 +26,7 @@ function StoreAccountLogin({onClose}) {
             const data = await response.json();
     
             if (response.ok) {
-                localStorage.setItem('store_ID', data.store_ID); // Store the store_ID in localStorage
+                localStorage.setItem('store_ID', data.store_ID); 
                 navigate('/DashboardStore', { state: { store_ID: data.store_ID } });
             } else {
                 setErrorMessage(data.message || 'Invalid credentials');

@@ -10,7 +10,7 @@ function ReportLineGraph({ storeID }) {
         const fetchReportData = async () => {
             try {
                 console.log(`Fetching report count for Store ID: ${storeID}`);
-                const response = await fetch(`http://localhost:5001/api/report-count-per-month/${storeID}`);
+                const response = await fetch(`${import.meta.env.VITE_API_URL}/api/report-count-per-month/${storeID}`);
         
                 if (!response.ok) {
                     const errorText = await response.text();

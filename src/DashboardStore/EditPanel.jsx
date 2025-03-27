@@ -20,7 +20,7 @@ function EditIncidentPanel({ incident, onClose, onSave }) {
         try {
             console.log("Sending edit request for:", incident.detection_ID, editedData);
 
-            const response = await fetch(`http://localhost:5001/api/edit-incident/${incident.detection_ID}`, {
+            const response = await fetch(`${import.meta.env.VITE_API_URL}/api/edit-incident/${incident.detection_ID}`, {
                 method: "PUT",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(editedData),
