@@ -1,7 +1,7 @@
 import styles from './Home.module.css';
 import UserIcon from '../assets/UserIcon.png';
 import AdminPanelIcon from '../assets/admin-panel.png';
-import mainbg from '../assets/bgmain.jfif';
+import mainbg from '../assets/bgmain.png';
 
 import { useState } from 'react';
 import StoreAccountLogin from './StoreLogin.jsx';
