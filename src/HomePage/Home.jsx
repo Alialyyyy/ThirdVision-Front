@@ -12,14 +12,6 @@ function Home(){
     const [isStoreAccountOpen, setIsStoreAccountOpen] = useState(false);
     const [isSTOCOpen, setIsSTOCOpen] = useState(false);
 
-    const toggleStoreAccountModal = () => {
-        setIsStoreAccountOpen(!isStoreAccountOpen);
-    };
-
-    const toggleSTOCModal = () => {
-        setIsSTOCOpen(!isSTOCOpen);
-    };
-
     return(
         <div className={styles.homeBg} style={{ backgroundImage: `url(${mainbg})` }}>
             <h1>ThirdVision</h1>
