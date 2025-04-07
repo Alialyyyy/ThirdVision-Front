@@ -134,10 +134,6 @@ function PopUpNotif({ latestReports }) {
                     <body>
                         <div class="alert-container">
                             <h3>${report.threat_level}</h3>
-                            <div>
-                                <img src="${report.image}" alt="Threat Image"/>
-                            </div>
-                            <button class="btn view-btn" onclick="window.open('${report.image}', '_blank')">🔍 VIEW THREAT</button>
                             <h3>${report.detection_type}</h3>
                             <h2>${report.store_name}, ${report.store_location}</h2>
                             <div class="date-time">${formatDate(report.date)} | ${formatTime(report.time)}</div>
