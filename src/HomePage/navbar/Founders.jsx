@@ -49,7 +49,7 @@ function Founders() {
                     <ul className={styles.tasks}>
                         <li>🔧 Raspberry Pi Setup – Configuring hardware & software integration.</li>
                         <li>🖥️ Edge AI Optimization – Running AI models efficiently on Raspberry Pi.</li>
-                        <li>🔬 Hardware & Sensor Calibration – Ensuring metal detector accuracy.</li>
+                        <li>🔬 Hardware Calibration – Ensuring modules functionality.</li>
                     </ul>
                 </div>
             </div>
