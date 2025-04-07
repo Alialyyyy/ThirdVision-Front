@@ -215,6 +215,7 @@ function IncidentHistory({ closePanel, storeID }) {
     };
 
     return (
+        <div className={IR.overlay}>
         <div className={IR.floatingPanel}>
             <button className={IR.closeButton} onClick={closePanel}>✖</button>
             <h2 className={IR.title}>Incident History</h2>
@@ -287,6 +288,7 @@ function IncidentHistory({ closePanel, storeID }) {
                     onSave={handleSaveEdit}
                 />
             )}
+        </div>
         </div>
     );
 }

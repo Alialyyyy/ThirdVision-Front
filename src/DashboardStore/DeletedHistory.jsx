@@ -66,6 +66,7 @@ function DeleteHistory({ closePanel, storeID }) {
         .filter(entry => entry.store_ID.toString() === storeID.toString());
 
     return (
+        <div className={styles.overlay}>
         <div className={styles.floatingPanel}>
             <button className={styles.closeButton} onClick={closePanel}>✖</button>
             <h2 className={styles.title}>Deleted Incident History</h2>
@@ -109,6 +110,7 @@ function DeleteHistory({ closePanel, storeID }) {
                     <button onClick={handleClearHistory} className={styles.clearButton}>Clear Table</button>
                 </div>
             )}
+        </div>
         </div>
     );
 }
