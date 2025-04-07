@@ -32,6 +32,7 @@ function RegisterStorePanel({ closePanel }) {
     };
 
     return (
+        <div className={IR.overlay}>
         <div className={IR.floatingPanel}>
             {/* ✅ Close Button */}
             <button className={IR.closeButton} onClick={closePanel}>✖</button>
@@ -75,6 +76,7 @@ function RegisterStorePanel({ closePanel }) {
                     </table>
                 </div>
             )}
+        </div>
         </div>
     );
 }

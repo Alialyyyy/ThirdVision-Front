@@ -62,8 +62,8 @@ function RepCountPanel() {
                             </YAxis>
                             <Tooltip />
                             <Legend />
-                            <Bar dataKey="Report Count" fill="darkred" barSize={40} isAnimationActive />
-                        </BarChart>
+                            <Bar name="Report Count" dataKey="count" fill="darkred" barSize={40} isAnimationActive />
+                            </BarChart>
                     </ResponsiveContainer>
                 </div>
 

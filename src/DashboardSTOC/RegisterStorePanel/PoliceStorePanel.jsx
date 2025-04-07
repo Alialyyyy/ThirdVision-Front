@@ -32,6 +32,7 @@ function PoliceAccs({ closePanel }) {
     };
 
     return (
+        <div className={IR.overlay}>
         <div className={IR.floatingPanel}>
             {/* ✅ Close Button */}
             <button className={IR.closeButton} onClick={closePanel}>✖</button>
@@ -73,6 +74,7 @@ function PoliceAccs({ closePanel }) {
                     </table>
                 </div>
             )}
+        </div>
         </div>
     );
 }
