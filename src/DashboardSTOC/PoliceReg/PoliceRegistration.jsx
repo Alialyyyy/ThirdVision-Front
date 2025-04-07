@@ -52,6 +52,7 @@ function PoliceRegPanel({ closePanel }) {
     };
 
     return (
+        <div className={styles.overlay}>
         <div className={styles.floatingpanel}>
             {/* ✅ Close Button */}
             <button className={styles.closeButton} onClick={closePanel}>
@@ -101,6 +102,7 @@ function PoliceRegPanel({ closePanel }) {
                     Submit
                 </button>
             </form>
+        </div>
         </div>
     );
 }

@@ -1,5 +1,16 @@
 
 
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    width: 100vw;
+    background: rgba(0, 0, 0, 0.5); /* dim background */
+    z-index: 9998; /* just below the panel (which is 9999) */
+    backdrop-filter: blur(2px); /* optional blur effect */
+}
+
 .storebtn {
     background-color: rgba(4, 5, 8, 0.67);
     border-radius: 30px;
