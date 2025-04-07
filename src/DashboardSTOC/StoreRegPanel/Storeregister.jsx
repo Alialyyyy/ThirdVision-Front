@@ -71,6 +71,7 @@ function AccountRegistrationPanel({ closePanel }) {
     };
 
     return isVisible ? (
+        <div className={styles.overlay}>
         <div className={styles.floatingpanel}>
             <button className={styles.closeButton} onClick={handleClose}>
                 &times;
@@ -161,6 +162,7 @@ function AccountRegistrationPanel({ closePanel }) {
             {status === 'error' && (
                 <p className={styles.errorMessage}>❌ Registration failed. Try again.</p>
             )}
+        </div>
         </div>
     ) : null;
 }
