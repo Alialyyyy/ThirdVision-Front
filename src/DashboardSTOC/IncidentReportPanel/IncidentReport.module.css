@@ -1,3 +1,17 @@
+
+
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    width: 100vw;
+    background: rgba(0, 0, 0, 0.5); /* dim background */
+    z-index: 9998; /* just below the panel (which is 9999) */
+    backdrop-filter: blur(2px); /* optional blur effect */
+}
+
+
 .title {
     font-family: Arial, sans-serif;
     margin-bottom: 5px;
@@ -25,7 +39,6 @@
 
 .searchContainer {
     display: flex; 
-    align-items: center;
     margin-bottom: 10px;
 }
 
@@ -91,6 +104,18 @@
     color: #00000059;
 }
 
+.dropdownContainer {
+    display: flex;
+    gap: 5px; 
+    flex-wrap: wrap; 
+    justify-content: flex-start; 
+}
+
+.dropdownWrapper {
+    flex: 1; 
+    min-width: 200px;
+    max-width: 150px; 
+}
 
 .table {
     width: 100%; 
@@ -102,17 +127,39 @@
 
 .table th,
 .table td {
-    flex: 1;
-    min-width: 70px; /* reasonable minimum for small screens */
+    width: 50px;            
+    max-width: 50px;
+    min-width: 50px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
     padding: 5px;
     text-align: center;
     font-size: 12px;
     color: #000000;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    overflow: hidden;
+    position: relative;
 }
 
+.table td {
+    position: relative;
+}
+
+.table td:hover::after {
+    content: attr(title);
+    position: absolute;
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 5px 8px;
+    border-radius: 4px;
+    font-size: 11px;
+    white-space: normal;
+    max-width: 250px;
+    z-index: 9999;
+    pointer-events: none;
+    top: 100%;
+    left: 0;
+    transform: translateY(4px);
+}
 
 .table th {
     background-color: #00000042;
@@ -156,38 +203,6 @@
 .eyeButton:hover {
     color: #0056b3;
 }
-
-.dropdownContainer {
-    display: flex; 
-    gap: 10px;
-    align-items: center;
-    position: relative;
-    justify-content: flex-start;
-    margin-bottom: 10px;
-}
-
-.dropdownWrapper {
-    position: relative;
-    display: inline-block;
-}
-
-.dropdownList {
-    position: absolute;
-    top: 100%;
-    left: 0;
-    background-color: white;
-    border: 0.5px solid #ccc;
-    border-radius: 4px;
-    z-index: 1000;
-    display: none;
-    width: 100%;
-    padding: 15px;
-}
-
-.dropdownWrapper:hover .dropdownList {
-    display: block;
-}
-
 
 @media (max-width: 768px) {
     .table th,

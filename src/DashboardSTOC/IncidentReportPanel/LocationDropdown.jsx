@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import styles from './Dropdown.module.css'; 
+import styles from './Dropdown.module.css';
 
 function LocationDropdown({ onSelect }) {
     const locations = [
@@ -15,21 +15,21 @@ function LocationDropdown({ onSelect }) {
     ];
 
     const [selectedLocations, setSelectedLocations] = useState([]);
-    const [isDropdownOpen, setIsDropdownOpen] = useState(false); 
+    const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
     const handleChange = (event) => {
         const value = event.target.value;
         setSelectedLocations((prev) => {
-            const newSelected = prev.includes(value) 
-                ? prev.filter((location) => location !== value) 
+            const newSelected = prev.includes(value)
+                ? prev.filter((location) => location !== value)
                 : [...prev, value];
-            onSelect(newSelected); 
+            onSelect(newSelected);
             return newSelected;
         });
     };
 
     const toggleDropdown = () => {
-        setIsDropdownOpen((prev) => !prev); 
+        setIsDropdownOpen((prev) => !prev);
     };
 
     return (
@@ -37,7 +37,7 @@ function LocationDropdown({ onSelect }) {
             <button className={styles.dropdownButton} onClick={toggleDropdown}>
                 {selectedLocations.length > 0 ? selectedLocations.join(', ') : 'Location ▼'}
             </button>
-            {isDropdownOpen && ( 
+            {isDropdownOpen && (
                 <div className={styles.dropdownList}>
                     {locations.map((location) => (
                         <label key={location} className={styles.dropdownLabel}>

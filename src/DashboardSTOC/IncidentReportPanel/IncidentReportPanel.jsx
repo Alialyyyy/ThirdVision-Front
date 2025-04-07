@@ -115,12 +115,13 @@ function IncidentReportPanel({ closePanel }) {
     };
 
     const formatTime = (timeString) => {
-        const [hours, minutes] = timeString.split(':');
+        const [hours, minutes, seconds] = timeString.split(':');
         const hour = parseInt(hours, 10);
         const minute = parseInt(minutes, 10);
-        const ampm = hour >= 12 ? 'PM' : 'AM'; 
-        const formattedHour = hour % 12 || 12; 
-        return `${formattedHour}:${minute < 10 ? '0' + minute : minute} ${ampm}`;
+        const second = parseInt(seconds, 10);
+        const ampm = hour >= 12 ? 'PM' : 'AM';
+        const formattedHour = hour % 12 || 12;
+        return `${formattedHour}:${minute < 10 ? '0' + minute : minute}:${second < 10 ? '0' + second : second} ${ampm}`;
     };
 
     const handleSearchChange = (event) => {
@@ -137,6 +138,7 @@ function IncidentReportPanel({ closePanel }) {
         const timeStr = entry.time; 
         const threatLevelStr = String(entry.threat_level).toLowerCase(); 
         const typeStr = String(entry.detection_type).toLowerCase();
+        const detectionType = entry.detection_type.toLowerCase();
         
         const matchesSearch = search.toLowerCase() === '' || (
             sharedIdStr.includes(search) ||
@@ -148,11 +150,15 @@ function IncidentReportPanel({ closePanel }) {
             formatDate(dateStr).includes(search) ||
             formatTime(timeStr).includes(search) ||
             threatLevelStr.includes(search) ||
-            typeStr.includes(search)
+            typeStr.includes(search)||
+            detectionType.includes(search.toLowerCase())
         );
 
         const matchesThreatLevel = selectedThreatLevel.length === 0 || selectedThreatLevel.includes(entry.threat_level);
-        const matchesType = selectedType.length === 0 || selectedType.includes(entry.detection_type);
+
+        const matchesType =
+        selectedType.length === 0 ||
+        selectedType.some((type) => entry.detection_type.toLowerCase().includes(type.toLowerCase()));
 
         return matchesSearch && matchesThreatLevel && matchesType;
     });
@@ -193,6 +199,7 @@ function IncidentReportPanel({ closePanel }) {
     };
 
     return (
+        <div className={IR.overlay}>
         <div className={IR.floatingPanel}>
             <button className={IR.closeButton} onClick={closePanel}>✖</button>
             <h2 className={IR.title}>Incident History</h2>
@@ -236,16 +243,16 @@ function IncidentReportPanel({ closePanel }) {
                             {history.length > 0 ? (
                                 history.slice().reverse().map((entry) => (
                                     <tr key={entry.detection_ID}>
-                                        <td>{entry.shared_detection_id}</td>
-                                        <td>{entry.store_ID}</td>
-                                        <td>{entry.store_name}</td>
-                                        <td>{entry.store_location}</td>
-                                        <td>{entry.store_address}</td>
-                                        <td>{parseInt(entry.store_contact, 10)}</td> 
-                                        <td>{formatDate(entry.date)}</td>
-                                        <td>{formatTime(entry.time)}</td>
-                                        <td>{entry.threat_level}</td>
-                                        <td>{entry.detection_type}</td>
+                                        <td title={entry.shared_detection_id}>{entry.shared_detection_id}</td>
+                                        <td title={entry.store_ID}>{entry.store_ID}</td>
+                                        <td title={entry.store_name}>{entry.store_name}</td>
+                                        <td title={entry.store_location}>{entry.store_location}</td>
+                                        <td title={entry.store_address}>{entry.store_address}</td>
+                                        <td title={entry.store_contact}>{parseInt(entry.store_contact, 10)}</td>
+                                        <td title={formatDate(entry.date)}>{formatDate(entry.date)}</td>
+                                        <td title={formatTime(entry.time)}>{formatTime(entry.time)}</td>
+                                        <td title={entry.threat_level}>{entry.threat_level}</td>
+                                        <td title={entry.detection_type}>{entry.detection_type}</td>
                                         <td>
                                             <button className={IR.eyeButton} onClick={(event) => handleButtonClick(event, entry.image)}>
                                                 <FaEye size={18} />
@@ -265,6 +272,7 @@ function IncidentReportPanel({ closePanel }) {
                     </table>
                 </div>
             )}
+        </div>
         </div>
     );
 }

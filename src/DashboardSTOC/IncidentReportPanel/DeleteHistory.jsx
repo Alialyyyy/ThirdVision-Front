@@ -9,6 +9,24 @@ function DeleteHistory({ closePanel }) {
         fetchDeleteHistory();
     }, []);
 
+        const handleClearHistory = async () => {
+            if (!window.confirm("Are you sure you want to permanently delete all records?")) return;
+
+            try {
+                const response = await fetch("http://localhost:5001/api/clear-delete-history2", {
+                    method: "DELETE"
+                });
+
+                if (!response.ok) throw new Error("Failed to clear delete history.");
+
+                alert("All records cleared successfully.");
+                fetchDeleteHistory(); // Refresh table
+            } catch (error) {
+                console.error("Error clearing delete history:", error);
+                alert("Failed to clear history. Check console for details.");
+            }
+        };    
+
     const fetchDeleteHistory = async () => {
         try {
             setLoading(true);
@@ -43,6 +61,7 @@ function DeleteHistory({ closePanel }) {
     };
 
     return (
+        <div className={styles.overlay}>
         <div className={styles.floatingPanel}>
             <button className={styles.closeButton} onClick={closePanel}>✖</button>
             <h2 className={styles.title}>Deleted Incident History</h2>
@@ -83,9 +102,10 @@ function DeleteHistory({ closePanel }) {
                             )}
                         </tbody>
                     </table>
-                    <button>Clear Table</button>
+                    <button onClick={handleClearHistory} className={styles.clearButton}>Clear Table</button>
                 </div>
             )}
+        </div>
         </div>
     );
 }
