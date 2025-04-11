@@ -3,7 +3,6 @@ import styles from './Dropdown.module.css';
 
 function ThreatDropdown({ onSelect }) {
     const threat_level = [
-        '1st warning', 
         '2nd warning', 
         '3rd warning', 
     ];

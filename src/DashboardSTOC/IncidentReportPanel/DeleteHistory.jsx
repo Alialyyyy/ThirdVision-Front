@@ -1,9 +1,12 @@
 import { useState, useEffect } from 'react';
 import styles from './DeleteHistory.module.css';  
+import AdminVerify from "../../Others/AdminPassword.jsx";
 
 function DeleteHistory({ closePanel }) {
     const [history, setHistory] = useState([]);
     const [loading, setLoading] = useState(false);
+    const [showVerify, setShowVerify] = useState(false);
+    const [pendingClear, setPendingClear] = useState(false);
 
     useEffect(() => {
         fetchDeleteHistory();
@@ -40,6 +43,26 @@ function DeleteHistory({ closePanel }) {
         } finally {
             setLoading(false);
         }
+    };
+
+    const confirmClear = () => {
+        if (window.confirm("Are you sure you want to permanently delete all records?")) {
+            setPendingClear(true);
+            setShowVerify(true);
+        }
+    };
+    
+    const onVerified = () => {
+        if (pendingClear) {
+            handleClearHistory();
+            setPendingClear(false);
+        }
+        setShowVerify(false);
+    };
+    
+    const onCloseVerify = () => {
+        setShowVerify(false);
+        setPendingClear(false);
     };
 
     const formatDate = (dateString) => {
@@ -102,8 +125,9 @@ function DeleteHistory({ closePanel }) {
                             )}
                         </tbody>
                     </table>
-                    <button onClick={handleClearHistory} className={styles.clearButton}>Clear Table</button>
-                </div>
+                    <button onClick={confirmClear} className={styles.clearButton}>Clear Table</button>
+                    {showVerify && <AdminVerify closePanel={onCloseVerify} onVerified={onVerified} />}
+                    </div>
             )}
         </div>
         </div>

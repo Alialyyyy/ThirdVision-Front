@@ -7,6 +7,7 @@ import IR from './IncidentReport.module.css';
 import LocationDropdown from './LocationDropdown.jsx';
 import ThreatDropdown from './ThreatDropdown.jsx';
 import TypeDropdown from './TypeDropdown.jsx';
+import AdminVerify from "../../Others/AdminPassword.jsx";
 
 function IncidentReportPanel({ closePanel }) {
     const [history, setHistory] = useState([]);
@@ -15,8 +16,9 @@ function IncidentReportPanel({ closePanel }) {
     const [selectedLocations, setSelectedLocations] = useState([]);
     const [selectedThreatLevel, setSelectedThreatLevel] = useState([]);
     const [selectedType, setSelectedType] = useState([]);
+    const [showVerify, setShowVerify] = useState(false);
+    const [pendingDeleteId, setPendingDeleteId] = useState(null);
     const tableRef = useRef(null);
-
 
     useEffect(() => {
         fetchIncidentHistory();
@@ -36,19 +38,19 @@ function IncidentReportPanel({ closePanel }) {
         return () => socket.disconnect();
     }, []);
 
-   useEffect(() => {
-           const intervalId = setInterval(() => {
-               setTime(new Date());
-           }, 1000);
-   
-           return () => clearInterval(intervalId);
-       }, []);
-   
-       const fetchIncidentHistory = async () => {
+    useEffect(() => {
+        const intervalId = setInterval(() => {
+            setTime(new Date());
+        }, 1000);
+
+        return () => clearInterval(intervalId);
+    }, []);
+
+    const fetchIncidentHistory = async () => {
         setLoading(true);
-    
+
         const queryParams = new URLSearchParams();
-    
+
         if (search) {
             queryParams.append("search", search);
         }
@@ -61,14 +63,14 @@ function IncidentReportPanel({ closePanel }) {
         if (selectedType.length > 0) {
             queryParams.append("searchType", selectedType.join(","));
         }
-    
+
         const queryString = queryParams.toString();
         const url = `http://localhost:5001/api/detection-history${queryString ? `?${queryString}` : ""}`;
-    
+
         try {
             const response = await fetch(url);
             if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
-    
+
             const data = await response.json();
             setHistory(data);
         } catch (error) {
@@ -77,17 +79,17 @@ function IncidentReportPanel({ closePanel }) {
             setLoading(false);
         }
     };
-    
+
     const handleDelete = async (detection_ID) => {
         if (!window.confirm("Are you sure you want to delete this record?")) return;
-    
+
         try {
             const response = await fetch(`http://localhost:5001/api/delete-detection/${detection_ID}`, {
                 method: "DELETE",
             });
-    
+
             if (!response.ok) throw new Error("Failed to delete record");
-    
+
             fetchIncidentHistory();
         } catch (error) {
             console.error("Error deleting record:", error);
@@ -128,18 +130,38 @@ function IncidentReportPanel({ closePanel }) {
         setSearch(event.target.value);
     };
 
+    const confirmDelete = (id) => {
+        if (window.confirm("Are you sure you want to delete this record?")) {
+            setPendingDeleteId(id);
+            setShowVerify(true);
+        }
+    };
+
+    const onVerified = () => {
+        if (pendingDeleteId !== null) {
+            handleDelete(pendingDeleteId);
+            setPendingDeleteId(null);
+        }
+        setShowVerify(false);
+    };
+
+    const onCloseVerify = () => {
+        setPendingDeleteId(null);
+        setShowVerify(false);
+    };
+
     const filteredHistory = history.filter((entry) => {
         const sharedIdStr = String(entry.shared_detection_id);
         const storeIdStr = String(entry.store_ID);
         const storenameStr = String(entry.store_name).toLowerCase();
         const locationStr = String(entry.store_location).toLowerCase();
         const contactStr = String(entry.store_contact);
-        const dateStr = entry.date; 
-        const timeStr = entry.time; 
-        const threatLevelStr = String(entry.threat_level).toLowerCase(); 
+        const dateStr = entry.date;
+        const timeStr = entry.time;
+        const threatLevelStr = String(entry.threat_level).toLowerCase();
         const typeStr = String(entry.detection_type).toLowerCase();
         const detectionType = entry.detection_type.toLowerCase();
-        
+
         const matchesSearch = search.toLowerCase() === '' || (
             sharedIdStr.includes(search) ||
             storeIdStr.includes(search) ||
@@ -150,7 +172,7 @@ function IncidentReportPanel({ closePanel }) {
             formatDate(dateStr).includes(search) ||
             formatTime(timeStr).includes(search) ||
             threatLevelStr.includes(search) ||
-            typeStr.includes(search)||
+            typeStr.includes(search) ||
             detectionType.includes(search.toLowerCase())
         );
 
@@ -198,6 +220,10 @@ function IncidentReportPanel({ closePanel }) {
         saveAs(fileData, `Incident_Report_${currentDate}.xlsx`);
     };
 
+    const handleRefresh = () => {
+        fetchIncidentHistory(); // This will refresh the data
+    };
+
     return (
         <div className={IR.overlay}>
         <div className={IR.floatingPanel}>
@@ -208,15 +234,15 @@ function IncidentReportPanel({ closePanel }) {
                     type="text"
                     placeholder="Search..."
                     value={search}
-                    onChange={(e) => setSearch(e.target.value)}
+                    onChange={handleSearchChange}
                     className={IR.searchInput}
                 />
                 <button className={IR.exportButton} onClick={exportToExcel}>📤 Export to Excel</button>
+                <button className={IR.refreshButton} onClick={handleRefresh}>🔄 Refresh</button>
             </div>
             <div className={IR.dropdownContainer}>
                 <div className={IR.dropdownWrapper}><LocationDropdown onSelect={setSelectedLocations} /></div>
                 <div className={IR.dropdownWrapper}><ThreatDropdown onSelect={setSelectedThreatLevel} /></div>
-                <div className={IR.dropdownWrapper}><TypeDropdown onSelect={setSelectedType} /></div>
             </div>
             {loading ? (
                 <p className={IR.loading}>Loading...</p>
@@ -259,7 +285,7 @@ function IncidentReportPanel({ closePanel }) {
                                             </button>
                                         </td>
                                         <td>
-                                            <button className={IR.deleteButton} onClick={() => handleDelete(entry.detection_ID)}>Delete</button>
+                                            <button className={IR.deleteButton} onClick={() => confirmDelete(entry.detection_ID)}>Delete</button>
                                         </td>
                                     </tr>
                                 ))
@@ -270,6 +296,7 @@ function IncidentReportPanel({ closePanel }) {
                             )}
                         </tbody>
                     </table>
+                    {showVerify && <AdminVerify closePanel={onCloseVerify} onVerified={onVerified} />}
                 </div>
             )}
         </div>
