@@ -36,8 +36,12 @@ function Dashboard() {
                     <RepCountPanel />
                 </div>
                 <div className={styles.panel2}>
-                    <PopUpNotif latestReports={latestReports}/>
+                <div style={{ display: "none" }}>
+                    <Notification setLatestReports={setLatestReports} latestReports={latestReports} />
                 </div>
+                <PopUpNotif latestReports={latestReports} />
+            </div>
+
             </div>
             </div>
         </div>

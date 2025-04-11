@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styles from './StoreregPanel.module.css';
+import AdminVerify from '../../Others/AdminPassword.jsx';
 
 function AccountRegistrationPanel({ closePanel }) {
     const [formData, setFormData] = useState({
@@ -14,6 +15,8 @@ function AccountRegistrationPanel({ closePanel }) {
 
     const [isVisible, setIsVisible] = useState(true);
     const [status, setStatus] = useState(null);
+    const [showVerify, setShowVerify] = useState(false);
+
     const navigate = useNavigate();
 
     const isFormComplete = Object.values(formData).every(value => value.trim() !== "");
@@ -38,26 +41,38 @@ function AccountRegistrationPanel({ closePanel }) {
         setIsVisible(false);
     };
 
-    const handleSubmit = async (e) => {
+    const handleProtectedSubmit = (e) => {
         e.preventDefault();
         if (!isFormComplete) {
             setStatus('error');
             return;
         }
-    
+        setShowVerify(true);
+    };
+
+    const onVerified = () => {
+        setShowVerify(false);
+        submitData();
+    };
+
+    const onCloseVerify = () => {
+        setShowVerify(false);
+    };
+
+    const submitData = async () => {
         try {
             const response = await fetch('http://localhost:5001/api/register', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(formData),
             });
-    
+
             const data = await response.json();
-    
+
             if (response.ok) {
                 setStatus('success');
                 setTimeout(() => {
-                    setIsVisible(false);  // Close panel after success
+                    setIsVisible(false);
                     navigate('/Dashboard');
                 }, 2000);
             } else if (data.message === 'Store with the same username, store name, and store address already exists!') {
@@ -78,11 +93,11 @@ function AccountRegistrationPanel({ closePanel }) {
             </button>
             <>
                 <h2 className={styles.h2}>Account Registration</h2>
-                <form onSubmit={handleSubmit}>
+                <form onSubmit={handleProtectedSubmit}>
                     <input
                         type="text"
                         name="username"
-                        placeholder="Username"
+                        placeholder="ThirdVision ID"
                         value={formData.username}
                         onChange={handleChange}
                         required
@@ -132,16 +147,16 @@ function AccountRegistrationPanel({ closePanel }) {
                         placeholder="Store Contact"
                         value={`+63${formData.store_contact}`}
                         onChange={(e) => {
-                            let input = e.target.value.replace(/\D/g, ''); 
+                            let input = e.target.value.replace(/\D/g, '');
                             if (input.startsWith('63')) {
-                                input = input.slice(2); 
+                                input = input.slice(2);
                             }
                             if (input.length > 10) {
-                                input = input.slice(0, 10); 
+                                input = input.slice(0, 10);
                             }
                             setFormData({ ...formData, store_contact: input });
                         }}
-                        maxLength={13} 
+                        maxLength={13}
                         required
                     />
 
@@ -161,6 +176,14 @@ function AccountRegistrationPanel({ closePanel }) {
             )}
             {status === 'error' && (
                 <p className={styles.errorMessage}>❌ Registration failed. Try again.</p>
+            )}
+
+            {/* Admin Verification Modal */}
+            {showVerify && (
+                <AdminVerify
+                    closePanel={onCloseVerify}
+                    onVerified={onVerified}
+                />
             )}
         </div>
         </div>
