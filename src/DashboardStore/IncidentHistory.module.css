@@ -11,6 +11,22 @@
     backdrop-filter: blur(2px); 
 }
 
+.refreshButton {
+    margin-left: 10px;
+    background-color: #027cff;
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    cursor: pointer;
+    font-size: 14px;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+}
+
+.refreshButton:hover {
+    background-color: #0056b3;
+}
+
 .title {
     font-family: Arial, sans-serif;
     margin: 0; 

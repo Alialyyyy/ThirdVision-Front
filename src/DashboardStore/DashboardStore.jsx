@@ -5,7 +5,7 @@ import Status from './Status.jsx';
 import { useState, useEffect } from 'react';
 import IncidentHistory from './IncidentHistory.jsx';
 import DeletedHistory from './DeletedHistory.jsx';
-import EditHistory from './EditHistory.jsx';
+import StoreProfile from './StoreProfile.jsx';
 import Sidebar from './Sidebar/Sidebar.jsx';
 
 function DashboardStore() {
@@ -31,7 +31,7 @@ function DashboardStore() {
             {/* Dashboard Content */}
             <div className={styles.dashboardContent}>
             {activePanel === "IncidentHistory" && <IncidentHistory storeID={storeID} closePanel={() => setActivePanel(null)} /> }
-            {activePanel === "EditHistory" && <EditHistory storeID={storeID} onClose={() => setActivePanel(null)} isOpen={activePanel === "EditHistory"} />}
+            {activePanel === "StoreProfile" && <StoreProfile storeID={storeID} onClose={() => setActivePanel(null)} isOpen={activePanel === "StoreProfile"} />}
             {activePanel === "DeletedHistory" && <DeletedHistory storeID={storeID} closePanel={() => setActivePanel(null)} />}
 
                 {/* Always Visible on Dashboard */}

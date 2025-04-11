@@ -1,0 +1,165 @@
+/* Background overlay to dim the rest of the dashboard when the panel is open */
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.5); 
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9996; 
+    backdrop-filter: blur(2px); 
+}
+
+/* Floating panel design */
+.floatingPanel {
+    background-color: #fff;
+    border-radius: 12px;
+    padding: 30px;
+    width: 500px;
+    max-width: 90%;
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1); /* Added a more subtle shadow */
+    position: relative;
+    z-index: 9998; /* Ensures the panel is above the overlay */
+    font-family: 'Arial', sans-serif; /* Uniform font */
+    color: #333; /* Default text color */
+    border: 1px solid #ddd; /* Subtle border to define the floating panel */
+}
+
+/* Close button on the top right */
+.closeButton {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: none;
+    border: none;
+    font-size: 24px;
+    color: #ff4d4d; /* Red color for the close button */
+    cursor: pointer;
+    transition: color 0.2s ease;
+}
+
+.closeButton:hover {
+    color: #cc0000; /* Darker red on hover */
+}
+
+/* Title of the panel */
+.title {
+    text-align: center;
+    margin-bottom: 20px;
+    font-size: 28px;
+    color: #333;
+    font-weight: 600; /* Slightly less bold for elegance */
+}
+
+/* Layout for the profile information */
+.profileInfo {
+    display: flex;
+    flex-direction: column;
+}
+
+/* Styling for each field */
+.row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 15px;
+}
+
+.input{
+    width: 55%;
+    padding: 12px;
+    border: 1px solid #e0e0e0;
+    border-radius: 6px;
+    background-color: #fafafa;
+    color: #444;
+    font-size: 16px;
+    word-wrap: break-word;
+    text-align: left;
+    box-sizing: border-box;
+}
+
+/* Labels in uppercase letters */
+.row label {
+    font-weight: bold;
+    text-transform: uppercase;
+    color: #444; /* Slightly darker color for the label */
+    width: 40%;
+    text-align: left;
+}
+
+/* Values for each field inside a textbox-like container */
+.row span {
+    width: 55%;
+    padding: 12px;
+    border: 1px solid #e0e0e0;
+    border-radius: 6px;
+    background-color: #fafafa;
+    color: #444;
+    font-size: 16px;
+    word-wrap: break-word;
+    text-align: left;
+    box-sizing: border-box; /* Ensures padding doesn't affect the width */
+}
+
+/* Edit button styling */
+.editButton {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 10px 18px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 15px;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    align-self: flex-end; 
+    margin-bottom: 20px;
+}
+
+.editButton:hover {
+    background-color: #0056b3;
+    transform: translateY(-2px); /* Subtle hover effect */
+}
+
+/* Spacing between each row for better readability */
+.row + .row {
+    margin-top: 12px;
+}
+
+.saveButton{
+    background-color: #ff2d2d;
+    border: none;
+    border-radius: 5px;
+    color: white;
+    margin: 10px;
+    padding: 8px;
+}
+
+.saveButton:hover{
+    background-color: #ff0000;
+    border: none;
+    border-radius: 5px;
+    color: white;
+    margin: 5px;
+    padding: 10px;
+    transition: 0.5s ease-in-out;
+}
+
+/* Responsive adjustments for smaller screens */
+@media (max-width: 768px) {
+    .floatingPanel {
+        width: 90%;
+        padding: 20px;
+    }
+
+    .row {
+        font-size: 14px;
+    }
+
+    .editButton {
+        padding: 8px 14px;
+        font-size: 14px;
+    }
+}
