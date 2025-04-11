@@ -1,7 +1,7 @@
 import styles from './Home.module.css';
 import UserIcon from '../assets/UserIcon.png';
 import AdminPanelIcon from '../assets/admin-panel.png';
-import mainbg from '../assets/bgmain.png';
+import mainbg from '../assets/bgmain.jfif';
 
 import { useState } from 'react';
 import StoreAccountLogin from './StoreLogin.jsx';
@@ -11,6 +11,14 @@ function Home(){
 
     const [isStoreAccountOpen, setIsStoreAccountOpen] = useState(false);
     const [isSTOCOpen, setIsSTOCOpen] = useState(false);
+
+    const toggleStoreAccountModal = () => {
+        setIsStoreAccountOpen(!isStoreAccountOpen);
+    };
+
+    const toggleSTOCModal = () => {
+        setIsSTOCOpen(!isSTOCOpen);
+    };
 
     return(
         <div className={styles.homeBg} style={{ backgroundImage: `url(${mainbg})` }}>
