@@ -16,7 +16,7 @@ function RepCountPanel() {
 
     // 📊 Monthly Bar Chart Data (reports per month for current year)
     useEffect(() => {
-        fetch("http://backendthirdv.onrender.com/api/reports-by-month")
+        fetch("https://backendthirdv.onrender.com/api/reports-by-month")
             .then((res) => res.json())
             .then((data) => {
                 console.log("📊 Monthly Data:", data);
@@ -29,7 +29,7 @@ function RepCountPanel() {
 
     // 📊 Pie Chart Data (reports by location for current year)
     useEffect(() => {
-        fetch("http://backendthirdv.onrender.com/api/reports-by-location")
+        fetch("https://backendthirdv.onrender.com/api/reports-by-location")
             .then((res) => res.json())
             .then((data) => {
                 console.log("📊 Location Data:", data);

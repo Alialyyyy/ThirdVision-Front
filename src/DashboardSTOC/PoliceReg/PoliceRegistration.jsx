@@ -31,7 +31,7 @@ function PoliceRegPanel({ closePanel }) {
 
     const submitData = async () => {
         try {
-            const response = await fetch("http://backendthirdv.onrender.com/register-police", {
+            const response = await fetch("https://backendthirdv.onrender.com/register-police", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(formData),

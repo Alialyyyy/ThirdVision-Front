@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { io } from "socket.io-client";
 import styles from "./Notification.module.css";
 
-const socket = io("http://backendthirdv.onrender.com");
+const socket = io("https://backendthirdv.onrender.com");
 
 function Notification({ storeID, setLatestReports, latestReports }) {
     const [highlight, setHighlight] = useState(false);
@@ -15,7 +15,7 @@ function Notification({ storeID, setLatestReports, latestReports }) {
         const fetchLatestReports = async () => {
             try {
                 // Include storeID in the API request
-                const response = await fetch(`http://backendthirdv.onrender.com/latest-reports2?storeID=${storeID}`);
+                const response = await fetch(`https://backendthirdv.onrender.com/latest-reports2?storeID=${storeID}`);
                 if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
                 const data = await response.json();
                 setLatestReports(data.slice(0, 1)); // Keep only the latest report

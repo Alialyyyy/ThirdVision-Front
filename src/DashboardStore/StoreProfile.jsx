@@ -24,7 +24,7 @@ function StoreProfile({ onClose, isOpen, storeID }) {
 
         const fetchStoreInfo = async () => {
             setLoading(true); // Start loading
-            const response = await fetch("http://backendthirdv.onrender.com/api/store-accounts");
+            const response = await fetch("https://backendthirdv.onrender.com/api/store-accounts");
             if (!response.ok) {
                 console.error("Failed to fetch store accounts");
                 setLoading(false); // Stop loading on error
@@ -73,7 +73,7 @@ function StoreProfile({ onClose, isOpen, storeID }) {
 
     const handleSave = async () => {
         try {
-            const response = await fetch(`http://backendthirdv.onrender.com/api/store-accounts/${store.store_ID}`, {
+            const response = await fetch(`https://backendthirdv.onrender.com/api/store-accounts/${store.store_ID}`, {
                 method: 'PUT', // Use PUT or PATCH depending on your API
                 headers: {
                     'Content-Type': 'application/json',

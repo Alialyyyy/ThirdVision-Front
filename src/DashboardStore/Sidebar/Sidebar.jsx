@@ -17,7 +17,7 @@ function Sidebar({ setActivePanel, storeID }) {
     useEffect(() => {
         const fetchStoreName = async () => {
             try {
-                const response = await fetch("http://backendthirdv.onrender.com/api/store-accounts");
+                const response = await fetch("https://backendthirdv.onrender.com/api/store-accounts");
                 if (!response.ok) throw new Error("Failed to fetch store accounts.");
 
                 const data = await response.json();

@@ -19,7 +19,7 @@ function STOCLogin({onClose}) {
         e.preventDefault();
 
         try {
-            const response = await fetch('http://backendthirdv.onrender.com/api/login', {
+            const response = await fetch('https://backendthirdv.onrender.com/api/login', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ username: adminID, password })

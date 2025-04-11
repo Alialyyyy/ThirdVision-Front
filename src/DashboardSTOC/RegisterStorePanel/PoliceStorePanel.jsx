@@ -14,7 +14,7 @@ function PoliceAccs({ closePanel }) {
 
     const fetchPoliceAccounts = () => {
         setLoading(true);
-        fetch("http://backendthirdv.onrender.com/api/police-accounts")
+        fetch("https://backendthirdv.onrender.com/api/police-accounts")
             .then((response) => {
                 if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
                 return response.json();
@@ -31,7 +31,7 @@ function PoliceAccs({ closePanel }) {
 
     const handleVerifiedDelete = async () => {
         try {
-            const response = await fetch(`http://backendthirdv.onrender.com/api/delete-police/${targetDeleteId}`, {
+            const response = await fetch(`https://backendthirdv.onrender.com/api/delete-police/${targetDeleteId}`, {
                 method: "DELETE"
             });
             if (!response.ok) throw new Error(`Failed to delete. Status: ${response.status}`);

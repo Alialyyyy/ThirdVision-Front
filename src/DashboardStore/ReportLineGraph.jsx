@@ -10,7 +10,7 @@ function ReportLineGraph({ storeID }) {
         const fetchReportData = async () => {
             try {
                 console.log(`Fetching report count for Store ID: ${storeID}`);
-                const response = await fetch(`http://backendthirdv.onrender.com/api/report-count-per-month/${storeID}`);
+                const response = await fetch(`https://backendthirdv.onrender.com/api/report-count-per-month/${storeID}`);
         
                 if (!response.ok) {
                     const errorText = await response.text();

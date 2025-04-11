@@ -2,14 +2,14 @@ import React, { useEffect } from "react";
 import { io } from "socket.io-client";
 import styles from "./Notification.module.css";
 
-const socket = io("http://backendthirdv.onrender.com");
+const socket = io("https://backendthirdv.onrender.com");
 
 function Notification({ setLatestReports, latestReports }) { 
 
     useEffect(() => {
     const fetchLatestReports = async () => {
         try {
-            const response = await fetch("http://backendthirdv.onrender.com/latest-reports");
+            const response = await fetch("https://backendthirdv.onrender.com/latest-reports");
             if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
             const data = await response.json();
             setLatestReports(data);  
