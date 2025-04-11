@@ -1,5 +1,6 @@
 import { useState } from "react";
 import styles from "./PoliceRegistration.module.css";
+import AdminVerify from "../../Others/AdminPassword.jsx";
 
 function PoliceRegPanel({ closePanel }) {  
     const [formData, setFormData] = useState({
@@ -9,6 +10,8 @@ function PoliceRegPanel({ closePanel }) {
         stoc_email: "",
         stoc_location: "",
     });
+
+    const [showVerify, setShowVerify] = useState(false);
 
     const locations = [
         'Putatan',
@@ -26,9 +29,7 @@ function PoliceRegPanel({ closePanel }) {
         setFormData({ ...formData, [e.target.name]: e.target.value });
     };
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-
+    const submitData = async () => {
         try {
             const response = await fetch("http://localhost:5001/register-police", {
                 method: "POST",
@@ -51,57 +52,97 @@ function PoliceRegPanel({ closePanel }) {
         }
     };
 
+    const handleProtectedSubmit = (e) => {
+        e.preventDefault();
+        setShowVerify(true); // Show password modal
+    };
+
+    const onVerified = () => {
+        setShowVerify(false);
+        submitData(); // Only submit after verifying
+    };
+
+    const onCloseVerify = () => {
+        setShowVerify(false);
+    };
+
     return (
         <div className={styles.overlay}>
         <div className={styles.floatingpanel}>
-            {/* ✅ Close Button */}
             <button className={styles.closeButton} onClick={closePanel}>
                 &times;
             </button>
 
             <h2 className={styles.h2}>Police Account Registration</h2>
 
-            <form onSubmit={handleSubmit}>
-                <input type="text" name="username" placeholder="Username" value={formData.username} onChange={handleChange} required />
-                <input type="password" name="password" placeholder="Password" value={formData.password} onChange={handleChange} required />
+            <form onSubmit={handleProtectedSubmit}>
                 <input
-                        type="text"
-                        name="stoc_contact"
-                        placeholder="Contact Number"
-                        value={`+63${formData.stoc_contact}`}
-                        onChange={(e) => {
-                            let input = e.target.value.replace(/\D/g, ''); 
-                            if (input.startsWith('63')) {
-                                input = input.slice(2); 
-                            }
-                            if (input.length > 10) {
-                                input = input.slice(0, 10); 
-                            }
-                            setFormData({ ...formData, stoc_contact: input });
-                        }}
-                        maxLength={13} 
-                        required
-                    />
-                <input type="email" name="stoc_email" placeholder="Email Address" value={formData.stoc_email} onChange={handleChange} required />
+                    type="text"
+                    name="username"
+                    placeholder="Username"
+                    value={formData.username}
+                    onChange={handleChange}
+                    required
+                />
+                <input
+                    type="password"
+                    name="password"
+                    placeholder="Password"
+                    value={formData.password}
+                    onChange={handleChange}
+                    required
+                />
+                <input
+                    type="text"
+                    name="stoc_contact"
+                    placeholder="Contact Number"
+                    value={`+63${formData.stoc_contact}`}
+                    onChange={(e) => {
+                        let input = e.target.value.replace(/\D/g, '');
+                        if (input.startsWith('63')) {
+                            input = input.slice(2);
+                        }
+                        if (input.length > 10) {
+                            input = input.slice(0, 10);
+                        }
+                        setFormData({ ...formData, stoc_contact: input });
+                    }}
+                    maxLength={13}
+                    required
+                />
+                <input
+                    type="email"
+                    name="stoc_email"
+                    placeholder="Email Address"
+                    value={formData.stoc_email}
+                    onChange={handleChange}
+                    required
+                />
                 <select
-                        name="stoc_location"
-                        value={formData.store_location}
-                        onChange={handleChange}
-                        required
-                    >
-                        <option value="" disabled>
-                            Select Barangay
+                    name="stoc_location"
+                    value={formData.stoc_location}
+                    onChange={handleChange}
+                    required
+                >
+                    <option value="" disabled>Select Barangay</option>
+                    {locations.map((location) => (
+                        <option key={location} value={location}>
+                            {location}
                         </option>
-                        {locations.map((location) => (
-                            <option key={location} value={location}>
-                                {location}
-                            </option>
-                        ))}
-                    </select>
+                    ))}
+                </select>
                 <button className={styles.submitbtn} type="submit">
                     Submit
                 </button>
             </form>
+
+            {/* Admin Verification Modal */}
+            {showVerify && (
+                <AdminVerify
+                    closePanel={onCloseVerify}
+                    onVerified={onVerified}
+                />
+            )}
         </div>
         </div>
     );
