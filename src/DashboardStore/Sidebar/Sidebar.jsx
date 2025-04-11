@@ -4,11 +4,14 @@ import styles from "./Sidebar.module.css";
 
 import bin from "../../assets/bin.png";
 import report from "../../assets/report.png";
+import eye2 from "../../assets/eye2.png";
+import user from "../../assets/user.png";
+import acc from "../../assets/account.png";
 import logoutIcon from "../../assets/logoutIcon.png";
 
 function Sidebar({ setActivePanel, storeID }) {
     const [isOpen, setIsOpen] = useState(true);
-    const [storeName, setStoreName] = useState(""); // 👈 to hold the name
+    const [storeName, setStoreName] = useState("");
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -18,7 +21,6 @@ function Sidebar({ setActivePanel, storeID }) {
                 if (!response.ok) throw new Error("Failed to fetch store accounts.");
 
                 const data = await response.json();
-                // Find the store name by storeID
                 const store = data.find(store => store.store_ID.toString() === storeID.toString());
 
                 if (store) {
@@ -35,6 +37,14 @@ function Sidebar({ setActivePanel, storeID }) {
         if (storeID) fetchStoreName();
     }, [storeID]);
 
+    function formatDate() {
+        return new Date().toLocaleDateString('en-US', {
+            month: 'long',
+            day: 'numeric',
+            year: 'numeric'
+        });
+    }
+
     const handleLogout = () => {
         navigate("/");
     };
@@ -43,30 +53,43 @@ function Sidebar({ setActivePanel, storeID }) {
         <>
             {/* ✅ Toggle Button Showing Store Name */}
             <button className={styles.toggleButton} onClick={() => setIsOpen(!isOpen)}>
-                ☰ <span>{isOpen ? storeName : ""}</span>
+                ☰ 
             </button>
 
             <div className={`${styles.sidebar} ${isOpen ? styles.open : styles.closed}`}>
                 <div className={styles.menu}>
-                    <img src={report} className={styles.logo} alt="Logo" />
+                    <img src={eye2} className={styles.logo} alt="Logo" />
                     <h3 className={styles.title2}>THIRDVISION</h3>
+
+                    <div className={styles.date}>
+                        {formatDate()}
+                    </div>   
+
+                    <button onClick={() => setActivePanel("StoreProfile")}>
+                        <img src={user} className={styles.icon} alt="Store Profile" /> Store Profile
+                    </button>
 
                     <button onClick={() => setActivePanel("IncidentHistory")}>
                         <img src={report} className={styles.icon} alt="Incident History" /> Incident History
-                    </button>
-
-                    <button onClick={() => setActivePanel("EditHistory")}>
-                        <img src={report} className={styles.icon} alt="Edited Reports" /> Edited Reports
                     </button>
 
                     <button onClick={() => setActivePanel("DeletedHistory")}>
                         <img src={bin} className={styles.icon} alt="Trash" /> Trash
                     </button>
 
-                    <button className={styles.logoutButton} onClick={handleLogout}>
-                        <img src={logoutIcon} className={styles.icon} alt="Logout" /> Logout
-                    </button>
+                    <p className={styles.p}>© 2025 ThirdVision</p>
+
+                    {/* Footer of the sidebar */}
                 </div>
+                <footer className={styles.footer}>
+                        <div className={styles.storeInfo}>
+                            <img src={acc} className={styles.icon} alt="User Icon" />
+                            <span className={styles.storeName}>{storeName}</span>
+                        </div>
+                        <button1 className={styles.logoutButton} onClick={handleLogout}>
+                             Logout
+                        </button1>
+                </footer>
             </div>
         </>
     );

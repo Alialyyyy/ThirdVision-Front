@@ -1,27 +1,42 @@
 import React, { useState, useEffect } from "react";
-import redW from "../../assets/alarm.gif";
+import redW from "../../assets/alarm.gif"; // Import the alarm gif
 import styles from "./PopUp.module.css";
 
-function PopUpNotif({ latestReports }) { 
+function PopUpNotif({ latestReports }) {
     const [lastSeenReportId, setLastSeenReportId] = useState(() => {
         return localStorage.getItem("lastSeenReportId") || null;
     });
 
     useEffect(() => {
+        // Check if the user is logged in
+        const isLoggedIn = localStorage.getItem("isLoggedIn");
+
+        // If the user is logged in, skip the popup
+        if (isLoggedIn) {
+            console.log("🚫 User is logged in, skipping popup.");
+            return; // Exit early if user is logged in
+        }
+
         if (latestReports.length > 0) {
-            const filteredReports = latestReports.filter(report =>
-                report.threat_level === "2nd Warning" || report.threat_level === "3rd Warning" || report.threat_level === "1st Warning"
+            const filteredReports = latestReports.filter(
+                (report) =>
+                    report.threat_level === "2nd Warning" ||
+                    report.threat_level === "3rd Warning" ||
+                    report.threat_level === "1st Warning"
             );
 
             if (filteredReports.length > 0) {
-                const latestReport = filteredReports[0]; 
+                const latestReport = filteredReports[0];
                 const latestReportId = latestReport.detection_ID;
                 console.log("🆕 New Warning Report ID:", latestReportId);
 
                 const dismissedReportId = sessionStorage.getItem("dismissedReportId");
                 console.log("🔄 Previously Dismissed Report ID:", dismissedReportId);
 
-                if (!dismissedReportId || latestReportId !== parseInt(dismissedReportId, 10)) {
+                if (
+                    !dismissedReportId ||
+                    latestReportId !== parseInt(dismissedReportId, 10)
+                ) {
                     if (latestReportId !== parseInt(lastSeenReportId, 10)) {
                         openPopupWindow(latestReport, latestReportId);
                         setLastSeenReportId(latestReportId);
@@ -45,18 +60,24 @@ function PopUpNotif({ latestReports }) {
     };
 
     const formatTime = (timeString) => {
-        const [hours, minutes, seconds] = timeString.split(':');
+        const [hours, minutes, seconds] = timeString.split(":");
         const hour = parseInt(hours, 10);
         const minute = parseInt(minutes, 10);
         const second = parseInt(seconds, 10);
-        const ampm = hour >= 12 ? 'PM' : 'AM';
+        const ampm = hour >= 12 ? "PM" : "AM";
         const formattedHour = hour % 12 || 12;
-        return `${formattedHour}:${minute < 10 ? '0' + minute : minute}:${second < 10 ? '0' + second : second} ${ampm}`;
+        return `${formattedHour}:${minute < 10 ? "0" + minute : minute}:${
+            second < 10 ? "0" + second : second
+        } ${ampm}`;
     };
 
     const formatDate = (dateString) => {
         const date = new Date(dateString);
-        return date.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+        return date.toLocaleDateString("en-US", {
+            year: "numeric",
+            month: "short",
+            day: "numeric",
+        });
     };
 
     const openPopupWindow = (report, reportId) => {
@@ -129,15 +150,21 @@ function PopUpNotif({ latestReports }) {
                                 window.opener.postMessage({ reportId: ${reportId} }, "*");
                                 window.close();
                             }
+
+                            window.addEventListener("beforeunload", function () {
+                                closePopup();
+                            });
                         </script>
                     </head>
                     <body>
                         <div class="alert-container">
+                            <!-- Alarm GIF -->
+                            <img src="${redW}" alt="Alarm" />
                             <h3>${report.threat_level}</h3>
                             <h3>${report.detection_type}</h3>
                             <h2>${report.store_name}, ${report.store_location}</h2>
                             <div class="date-time">${formatDate(report.date)} | ${formatTime(report.time)}</div>
-                            <button class="btn close-btn" onClick="closePopup()">✖ CLOSE</button>
+                            <button class="btn close-btn" onClick="closePopup()">TAKE ACTION</button>
                         </div>
                     </body>
                 </html>
@@ -157,7 +184,7 @@ function PopUpNotif({ latestReports }) {
         return () => window.removeEventListener("message", handlePopupClose);
     }, []);
 
-    return null; 
+    return null;
 }
 
 export default PopUpNotif;
