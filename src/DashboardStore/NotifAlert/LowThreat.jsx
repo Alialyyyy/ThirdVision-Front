@@ -5,7 +5,7 @@ function LowThreat() {
     const [lowThreats, setLowThreats] = useState([]);
 
     useEffect(() => {
-        fetch("http://localhost:5001/cover-reports")  
+        fetch("http://backendthirdv.onrender.com/cover-reports")  
             .then((response) => response.json())
             .then((data) => {
                 setLowThreats(data); 
