@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import redW from "../../assets/alarm.gif"; // Import the alarm gif
+import redW from "../../assets/alarm.gif"; // Alarm GIF
 import styles from "./PopUp.module.css";
 
 function PopUpNotif({ latestReports }) {
@@ -8,67 +8,63 @@ function PopUpNotif({ latestReports }) {
     });
 
     useEffect(() => {
-        // Check if the user is logged in
         const isLoggedIn = localStorage.getItem("isLoggedIn");
 
-        // If the user is logged in, skip the popup
-        if (isLoggedIn) {
-            console.log("🚫 User is logged in, skipping popup.");
-            return; // Exit early if user is logged in
+        // 🛑 Skip if login state is unknown or user is logged in
+        if (isLoggedIn === null) {
+            console.log("⏳ Login state not yet determined. Waiting...");
+            return;
         }
 
+        if (isLoggedIn === "true") {
+            console.log("🚫 User is logged in, skipping popup.");
+            return;
+        }
+
+        // ✅ Proceed only if logged out and we have reports
         if (latestReports.length > 0) {
             const filteredReports = latestReports.filter(
                 (report) =>
+                    report.threat_level === "1st Warning" ||
                     report.threat_level === "2nd Warning" ||
-                    report.threat_level === "3rd Warning" ||
-                    report.threat_level === "1st Warning"
+                    report.threat_level === "3rd Warning"
             );
 
             if (filteredReports.length > 0) {
                 const latestReport = filteredReports[0];
                 const latestReportId = latestReport.detection_ID;
+
                 console.log("🆕 New Warning Report ID:", latestReportId);
 
-                const dismissedReportId = sessionStorage.getItem("dismissedReportId");
-                console.log("🔄 Previously Dismissed Report ID:", dismissedReportId);
+                const dismissedReportId = parseInt(sessionStorage.getItem("dismissedReportId"), 10);
+                const lastSeenId = parseInt(lastSeenReportId, 10);
 
-                if (
-                    !dismissedReportId ||
-                    latestReportId !== parseInt(dismissedReportId, 10)
-                ) {
-                    if (latestReportId !== parseInt(lastSeenReportId, 10)) {
-                        openPopupWindow(latestReport, latestReportId);
-                        setLastSeenReportId(latestReportId);
-                        localStorage.setItem("lastSeenReportId", latestReportId);
-                    } else {
-                        console.log("🚫 Report already seen, not triggering popup.");
-                    }
+                console.log("🔄 Previously Dismissed Report ID:", dismissedReportId);
+                console.log("👁 Last Seen Report ID:", lastSeenId);
+
+                const shouldShow =
+                    (!dismissedReportId || latestReportId !== dismissedReportId) &&
+                    latestReportId !== lastSeenId;
+
+                if (shouldShow) {
+                    openPopupWindow(latestReport, latestReportId);
+                    setLastSeenReportId(latestReportId);
+                    localStorage.setItem("lastSeenReportId", latestReportId);
                 } else {
-                    console.log("🚫 PopUp is already dismissed, not showing again.");
+                    console.log("🚫 Popup not shown (already dismissed or seen).");
                 }
             } else {
-                console.log("✅ No '2nd Warning' or '3rd Warning' threats found.");
+                console.log("✅ No relevant warning threats found.");
             }
         }
     }, [latestReports, lastSeenReportId]);
 
-    const closePopup = () => {
-        if (lastSeenReportId) {
-            sessionStorage.setItem("dismissedReportId", lastSeenReportId);
-        }
-    };
-
     const formatTime = (timeString) => {
         const [hours, minutes, seconds] = timeString.split(":");
         const hour = parseInt(hours, 10);
-        const minute = parseInt(minutes, 10);
-        const second = parseInt(seconds, 10);
         const ampm = hour >= 12 ? "PM" : "AM";
         const formattedHour = hour % 12 || 12;
-        return `${formattedHour}:${minute < 10 ? "0" + minute : minute}:${
-            second < 10 ? "0" + second : second
-        } ${ampm}`;
+        return `${formattedHour}:${minutes.padStart(2, "0")}:${seconds.padStart(2, "0")} ${ampm}`;
     };
 
     const formatDate = (dateString) => {
@@ -151,20 +147,17 @@ function PopUpNotif({ latestReports }) {
                                 window.close();
                             }
 
-                            window.addEventListener("beforeunload", function () {
-                                closePopup();
-                            });
+                            window.addEventListener("beforeunload", closePopup);
                         </script>
                     </head>
                     <body>
                         <div class="alert-container">
-                            <!-- Alarm GIF -->
                             <img src="${redW}" alt="Alarm" />
                             <h3>${report.threat_level}</h3>
                             <h3>${report.detection_type}</h3>
                             <h2>${report.store_name}, ${report.store_location}</h2>
                             <div class="date-time">${formatDate(report.date)} | ${formatTime(report.time)}</div>
-                            <button class="btn close-btn" onClick="closePopup()">TAKE ACTION</button>
+                            <button class="btn close-btn" onclick="closePopup()">TAKE ACTION</button>
                         </div>
                     </body>
                 </html>
@@ -177,6 +170,7 @@ function PopUpNotif({ latestReports }) {
         const handlePopupClose = (event) => {
             if (event.data?.reportId) {
                 sessionStorage.setItem("dismissedReportId", event.data.reportId);
+                console.log("✅ Report dismissed and stored:", event.data.reportId);
             }
         };
 
