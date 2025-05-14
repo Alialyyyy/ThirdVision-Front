@@ -12,7 +12,7 @@ function DeleteHistory({ closePanel, storeID }) {
     const fetchDeleteHistory = async () => {
         try {
             setLoading(true);
-            const response = await fetch("https://backendthirdv.onrender.com/api/delete-history-store");
+            const response = await fetch("https://backendthirdv-n0dx.onrender.com/api/delete-history-store");
             if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
 
             const data = await response.json();

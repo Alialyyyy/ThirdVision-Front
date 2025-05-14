@@ -73,7 +73,7 @@ function StoreProfile({ onClose, isOpen, storeID }) {
 
     const handleSave = async () => {
         try {
-            const response = await fetch(`https://backendthirdv.onrender.com/api/store-accounts/${store.store_ID}`, {
+            const response = await fetch(`https://backendthirdv-n0dx.onrender.com/api/store-accounts/${store.store_ID}`, {
                 method: 'PUT', // Use PUT or PATCH depending on your API
                 headers: {
                     'Content-Type': 'application/json',

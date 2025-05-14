@@ -32,7 +32,7 @@ function IncidentHistory({ closePanel, storeID }) {
         }
 
         // If storeID is available, include it in the URL
-        const url = `https://backendthirdv.onrender.com/api/incident-history/${storeID}${queryParams.toString() ? `?${queryParams.toString()}` : ""}`;
+        const url = `https://backendthirdv-n0dx.onrender.com/api/incident-history/${storeID}${queryParams.toString() ? `?${queryParams.toString()}` : ""}`;
 
         try {
             const response = await fetch(url);
@@ -71,7 +71,7 @@ function IncidentHistory({ closePanel, storeID }) {
         if (!window.confirm("Are you sure you want to delete this record?")) return;
 
         try {
-            const response = await fetch(`https://backendthirdv.onrender.com/api/delete-detection-store/${shared_detection_id}`, {
+            const response = await fetch(`https://backendthirdv-n0dx.onrender.com/api/delete-detection-store/${shared_detection_id}`, {
                 method: "DELETE",
             });
 
@@ -100,7 +100,7 @@ function IncidentHistory({ closePanel, storeID }) {
 
     const handleSaveEdit = async (updatedIncident) => {
         try {
-            const response = await fetch(`https://backendthirdv.onrender.com/api/edit-incident/${updatedIncident.detection_ID}`, {
+            const response = await fetch(`https://backendthirdv-n0dx.onrender.com/api/edit-incident/${updatedIncident.detection_ID}`, {
                 method: "PUT",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(updatedIncident),

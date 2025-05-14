@@ -17,7 +17,7 @@ function StoreAccountLogin({onClose}) {
         e.preventDefault();
     
         try {
-            const response = await fetch('https://backendthirdv.onrender.com/api/login2', {
+            const response = await fetch('https://backendthirdv-n0dx.onrender.com/api/login2', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ username: storeID, password }) 

@@ -16,7 +16,7 @@ function DeleteHistory({ closePanel }) {
             if (!window.confirm("Are you sure you want to permanently delete all records?")) return;
 
             try {
-                const response = await fetch("https://backendthirdv.onrender.com/api/clear-delete-history2", {
+                const response = await fetch("https://backendthirdv-n0dx.onrender.com/api/clear-delete-history2", {
                     method: "DELETE"
                 });
 
@@ -33,7 +33,7 @@ function DeleteHistory({ closePanel }) {
     const fetchDeleteHistory = async () => {
         try {
             setLoading(true);
-            const response = await fetch("https://backendthirdv.onrender.com/api/delete-history");
+            const response = await fetch("https://backendthirdv-n0dx.onrender.com/api/delete-history");
             if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
 
             const data = await response.json();

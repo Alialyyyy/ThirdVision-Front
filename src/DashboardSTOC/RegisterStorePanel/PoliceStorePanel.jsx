@@ -14,7 +14,7 @@ function PoliceAccs({ closePanel }) {
 
     const fetchPoliceAccounts = () => {
         setLoading(true);
-        fetch("https://backendthirdv.onrender.com/api/police-accounts")
+        fetch("https://backendthirdv-n0dx.onrender.com/api/police-accounts")
             .then((response) => {
                 if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
                 return response.json();

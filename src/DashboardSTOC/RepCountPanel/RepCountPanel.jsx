@@ -29,7 +29,7 @@ function RepCountPanel() {
 
     // 📊 Pie Chart Data (reports by location for current year)
     useEffect(() => {
-        fetch("https://backendthirdv.onrender.com/api/reports-by-location")
+        fetch("https://backendthirdv-n0dx.onrender.com/api/reports-by-location")
             .then((res) => res.json())
             .then((data) => {
                 console.log("📊 Location Data:", data);

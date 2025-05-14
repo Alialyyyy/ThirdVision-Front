@@ -14,7 +14,7 @@ function RegisterStorePanel({ closePanel }) {
 
     const fetchStoreAccounts = () => {
         setLoading(true);
-        fetch("https://backendthirdv.onrender.com/api/store-accounts")
+        fetch("https://backendthirdv-n0dx.onrender.com/api/store-accounts")
             .then((response) => {
                 if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
                 return response.json();
@@ -44,7 +44,7 @@ function RegisterStorePanel({ closePanel }) {
 
     const handleDelete = async (id) => {
         try {
-            const response = await fetch(`https://backendthirdv.onrender.com/api/delete-store/${id}`, {
+            const response = await fetch(`https://backendthirdv-n0dx.onrender.com/api/delete-store/${id}`, {
                 method: "DELETE",
             });
             if (!response.ok) throw new Error(`Failed to delete account. Status: ${response.status}`);

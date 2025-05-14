@@ -25,7 +25,7 @@ function IncidentReportPanel({ closePanel }) {
     }, [search, selectedLocations, selectedThreatLevel, selectedType]);
 
     useEffect(() => {
-        const socket = io("https://backendthirdv.onrender.com");
+        const socket = io("https://backendthirdv-n0dx.onrender.com");
         socket.on("new-detection", (data) => {
             if (Notification.permission === "granted") {
                 new Notification("\ud83d\udea8 New Detection Alert", {
@@ -65,7 +65,7 @@ function IncidentReportPanel({ closePanel }) {
         }
 
         const queryString = queryParams.toString();
-        const url = `https://backendthirdv.onrender.com/api/detection-history${queryString ? `?${queryString}` : ""}`;
+        const url = `https://backendthirdv-n0dx.onrender.com/api/detection-history${queryString ? `?${queryString}` : ""}`;
 
         try {
             const response = await fetch(url);
@@ -84,7 +84,7 @@ function IncidentReportPanel({ closePanel }) {
         if (!window.confirm("Are you sure you want to delete this record?")) return;
 
         try {
-            const response = await fetch(`https://backendthirdv.onrender.com/api/delete-detection/${detection_ID}`, {
+            const response = await fetch(`https://backendthirdv-n0dx.onrender.com/api/delete-detection/${detection_ID}`, {
                 method: "DELETE",
             });
 
