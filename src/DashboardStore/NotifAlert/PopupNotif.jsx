@@ -154,7 +154,7 @@ function PopUpNotif({ latestReports }) {
                         <div class="alert-container">
                             <img src="${redW}" alt="Alarm" />
                             <h3>${report.threat_level}</h3>
-                            <h3>${report.detection_type.replace(/\n/g, "<br>")}</h3>
+                            <h3>${report.detection_type.replace(/\n/g, "<br>")}</h3>  
                             <h2>${report.store_name}, ${report.store_location}</h2>
                             <div class="date-time">${formatDate(report.date)} | ${formatTime(report.time)}</div>
                             <button class="btn close-btn" onclick="closePopup()">TAKE ACTION</button>
