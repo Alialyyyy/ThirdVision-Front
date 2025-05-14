@@ -130,7 +130,7 @@ function PopUpNotif({ latestReports }) {
                                 <img src="${redW}" />
                             </div>
                             <button class="btn view-btn" onclick="window.open('${report.image}', '_blank')">🔍 VIEW THREAT</button>
-                            <h3>${report.detection_type.replace(/\n/g, "<br>")}</h3>
+                            <h3>${report.detection_type.replace(/\n/g,"<br>")}</h3> 
                             <h2>${report.store_name}, ${report.store_location}</h2>
                             <div class="date-time">${formatDate(report.date)} | ${formatTime(report.time)}</div>
                             <button class="btn close-btn" onclick="closePopup()">✖ CLOSE</button>
