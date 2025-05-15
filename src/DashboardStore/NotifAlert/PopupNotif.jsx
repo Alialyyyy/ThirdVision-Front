@@ -8,20 +8,6 @@ function PopUpNotif({ latestReports }) {
     });
 
     useEffect(() => {
-        const isLoggedIn = localStorage.getItem("isLoggedIn");
-
-        // 🛑 Skip if login state is unknown or user is logged in
-        if (isLoggedIn === null) {
-            console.log("⏳ Login state not yet determined. Waiting...");
-            return;
-        }
-
-        if (isLoggedIn === "true") {
-            console.log("🚫 User is logged in, skipping popup.");
-            return;
-        }
-
-        // ✅ Proceed only if logged out and we have reports
         if (latestReports.length > 0) {
             const filteredReports = latestReports.filter(
                 (report) =>
