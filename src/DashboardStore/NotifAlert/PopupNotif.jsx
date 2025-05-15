@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from "react";
+import redW from "../../assets/alarm.gif";
+
 
 function PopUpNotif({ latestReports }) {
   const [lastSeenReportId, setLastSeenReportId] = useState(() => {
@@ -116,7 +118,7 @@ function PopUpNotif({ latestReports }) {
           </head>
           <body>
             <div class="alert-container">
-              <img src="/alarm.gif" alt="Alarm" />
+              <img src="${redW}"/>
               <h3>${report.threat_level}</h3>
               <h3>${report.detection_type.replace(/\n/g, "<br>")}</h3>  
               <h2>${report.store_name}, ${report.store_location}</h2>
