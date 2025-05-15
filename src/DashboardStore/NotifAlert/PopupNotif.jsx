@@ -9,7 +9,13 @@ function PopUpNotif({ latestReports }) {
 
   useEffect(() => {
     if (latestReports.length > 0) {
-      const latestReport = latestReports[0];
+        const filteredReports = latestReports.filter(
+            (report) =>
+                report.threat_level === "1st Warning" ||
+                report.threat_level === "2nd Warning" ||
+                report.threat_level === "3rd Warning"
+    );        
+        const latestReport = latestReports[0];
       const latestReportId = latestReport.detection_ID;
 
       const dismissedReportId = parseInt(sessionStorage.getItem("dismissedReportId"), 10);
