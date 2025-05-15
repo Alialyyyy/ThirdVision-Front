@@ -14,7 +14,8 @@ function PopUpNotif({ latestReports }) {
                 report.threat_level === "1st Warning" ||
                 report.threat_level === "2nd Warning" ||
                 report.threat_level === "3rd Warning"
-    );        
+    );       
+    if (filteredReports.length > 0) { 
         const latestReport = latestReports[0];
       const latestReportId = latestReport.detection_ID;
 
@@ -36,7 +37,8 @@ function PopUpNotif({ latestReports }) {
       } else {
         console.log("🚫 Popup not shown (already dismissed or seen).");
       }
-    }
+    }}
+    
   }, [latestReports, lastSeenReportId]);
 
   const formatTime = (timeString) => {
