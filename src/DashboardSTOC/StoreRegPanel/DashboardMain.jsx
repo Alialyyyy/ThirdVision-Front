@@ -25,7 +25,6 @@ function Dashboard() {
                 {/* Display selected sidebar panel */}
                 {activePanel === "StoreRegPanel" && <StoreregPanel closePanel={() => setActivePanel(null)}/>}
                 {activePanel === "IncidentReportPanel" && (<IncidentReportPanel closePanel={() => setActivePanel(null)} />)}
-                {activePanel === "RegisterStorePanel" && (<RegisterStorePanel closePanel={() => setActivePanel(null)} />)}                
                 {activePanel === "DeleteHistory" && (<DeleteHistory closePanel={() => setActivePanel(null)} />)}
                 {activePanel === "PoliceRegistration" && (<PoliceRegPanel closePanel={() => setActivePanel(null)} />)}
                 {activePanel === "PoliceStorePanel" && (<PoliceAccs closePanel={() => setActivePanel(null)} />)}                                       

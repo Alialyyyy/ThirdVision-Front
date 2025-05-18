@@ -37,9 +37,6 @@ function Sidebar({ setActivePanel }) {
                     <button onClick={() => setActivePanel("PoliceRegistration")}>
                         <img src={addAdmin} className={styles.icon} /> Police Registration
                     </button>
-                    <button onClick={() => setActivePanel("StoreRegPanel")}>
-                        <img src={add} className={styles.icon} /> Store Registration
-                    </button>
                     <button onClick={() => setActivePanel("RegisterStorePanel")}>
                         <img src={registered} className={styles.icon} /> Verified Stores
                     </button>
