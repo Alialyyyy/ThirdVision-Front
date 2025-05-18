@@ -1,12 +1,14 @@
 import { useState } from 'react';
 import styles from './StoreLogin.module.css';
 import { useNavigate } from 'react-router-dom';
+import AccountRegistrationPanel from '../Store/AccountRegistrationPanel';
 
-function StoreAccountLogin({onClose}) {
+function StoreAccountLogin({ onClose }) {
     const [showPasscode, setShowPasscode] = useState(false);
-    const [storeID, setStoreID] = useState(''); 
+    const [storeID, setStoreID] = useState('');
     const [password, setPassword] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
+    const [showRegistration, setShowRegistration] = useState(false); // <- New state
     const navigate = useNavigate();
 
     const togglePasscodeVisibility = () => {
@@ -15,24 +17,24 @@ function StoreAccountLogin({onClose}) {
 
     const handleLogin = async (e) => {
         e.preventDefault();
-    
+
         try {
             const response = await fetch('https://backendthirdv-n0dx.onrender.com/api/login2', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ username: storeID, password }) 
+                body: JSON.stringify({ username: storeID, password })
             });
-    
+
             const data = await response.json();
-    
+
             if (response.ok) {
-                localStorage.setItem('store_ID', data.store_ID); 
+                localStorage.setItem('store_ID', data.store_ID);
                 navigate('/DashboardStore', { state: { store_ID: data.store_ID } });
             } else {
                 setErrorMessage(data.message || 'Invalid credentials');
             }
         } catch (error) {
-            console.error('Error connecting to the server:', error); 
+            console.error('Error connecting to the server:', error);
             setErrorMessage('Error connecting to the server');
         }
     };
@@ -45,10 +47,10 @@ function StoreAccountLogin({onClose}) {
                 <form className={styles.form} onSubmit={handleLogin}>
                     <label className={styles.label}>
                         Enter ThirdVision ID:
-                        <input 
-                            type="text" 
-                            className={styles.input} 
-                            placeholder="ThirdVision ID" 
+                        <input
+                            type="text"
+                            className={styles.input}
+                            placeholder="ThirdVision ID"
                             value={storeID}
                             onChange={(e) => setStoreID(e.target.value)}
                             required
@@ -73,7 +75,12 @@ function StoreAccountLogin({onClose}) {
                                 {showPasscode ? 'Hide' : 'Show'}
                             </button>
                         </div>
-                        <div>
+                        {/* Create Account Button */}
+                        <div
+                            className={styles.createAccountLink}
+                            onClick={() => setShowRegistration(true)}
+                            style={{ cursor: 'pointer', color: '#007BFF', marginTop: '8px' }}
+                        >
                             CREATE ACCOUNT
                         </div>
                     </label>
@@ -82,6 +89,11 @@ function StoreAccountLogin({onClose}) {
                         Login
                     </button>
                 </form>
+
+                {/* Conditional render registration panel */}
+                {showRegistration && (
+                    <AccountRegistrationPanel closePanel={() => setShowRegistration(false)} />
+                )}
             </div>
         </div>
     );
