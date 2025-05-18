@@ -73,6 +73,9 @@ function StoreAccountLogin({onClose}) {
                                 {showPasscode ? 'Hide' : 'Show'}
                             </button>
                         </div>
+                        <div>
+                            CREATE ACCOUNT
+                        </div>
                     </label>
                     {errorMessage && <p className={styles.error}>{errorMessage}</p>}
                     <button type="submit" className={styles.submitButton}>
