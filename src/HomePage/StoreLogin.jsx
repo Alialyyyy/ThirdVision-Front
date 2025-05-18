@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import styles from './StoreLogin.module.css';
 import { useNavigate } from 'react-router-dom';
-import AccountRegistrationPanel from '../Store/AccountRegistrationPanel';
+import AccountRegistrationPanel from './Storeregister.jsx';
 
 function StoreAccountLogin({ onClose }) {
     const [showPasscode, setShowPasscode] = useState(false);
@@ -77,11 +77,17 @@ function StoreAccountLogin({ onClose }) {
                         </div>
                         {/* Create Account Button */}
                         <div
-                            className={styles.createAccountLink}
-                            onClick={() => setShowRegistration(true)}
-                            style={{ cursor: 'pointer', color: '#007BFF', marginTop: '8px' }}
+                        className={styles.createAccountLink}
+                        onClick={() => setShowRegistration(true)}
+                        style={{
+                            cursor: 'pointer',
+                            color: 'blue',
+                            display: 'block',          
+                            textAlign: 'center',      
+                            margin: '8px auto',      
+                        }}
                         >
-                            CREATE ACCOUNT
+                        CREATE ACCOUNT
                         </div>
                     </label>
                     {errorMessage && <p className={styles.error}>{errorMessage}</p>}

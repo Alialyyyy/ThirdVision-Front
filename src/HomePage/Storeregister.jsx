@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styles from './StoreregPanel.module.css';
-import AdminVerify from '../../Others/AdminPassword.jsx';
+import AdminVerify from '../Others/AdminPassword.jsx';
 
 function AccountRegistrationPanel({ closePanel }) {
     const [formData, setFormData] = useState({
