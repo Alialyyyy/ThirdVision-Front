@@ -8,7 +8,8 @@ function StoreAccountLogin({ onClose }) {
     const [storeID, setStoreID] = useState('');
     const [password, setPassword] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
-    const [showRegistration, setShowRegistration] = useState(false); // <- New state
+    const [showRegistration, setShowRegistration] = useState(false);
+    
     const navigate = useNavigate();
 
     const togglePasscodeVisibility = () => {

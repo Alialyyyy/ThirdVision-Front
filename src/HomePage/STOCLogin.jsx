@@ -4,11 +4,11 @@ import { useNavigate } from 'react-router-dom';
 
 function STOCLogin({onClose}) {
     const [showPassword, setShowPassword] = useState(false);
-    
     const [adminID, setAdminID] = useState('');
     const [password, setPassword] = useState('');
-
     const [errorMessage, setErrorMessage] = useState('');
+    const [showRegistration, setShowRegistration] = useState(false);
+    
     const navigate = useNavigate();
 
     const togglePasswordVisibility = () => {

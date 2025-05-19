@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import StoreProfileEdit from './StoreProfileEdit';
-import styles from './StoreProfile.module.css'; // StoreProfile styles
+import styles from './StoreProfile.module.css';
 
 function StoreProfile({ onClose, isOpen, storeID }) {
     const [store, setStore] = useState(null);
@@ -19,40 +19,44 @@ function StoreProfile({ onClose, isOpen, storeID }) {
     });
 
     useEffect(() => {
-        // Fetch store data
-        if (!storeID) return;
-
         const fetchStoreInfo = async () => {
-            setLoading(true); // Start loading
-            const response = await fetch("https://backendthirdv.onrender.com/api/store-accounts");
-            if (!response.ok) {
-                console.error("Failed to fetch store accounts");
-                setLoading(false); // Stop loading on error
-                return;
+            if (!storeID) return;
+
+            try {
+                setLoading(true);
+                const response = await fetch("https://backendthirdv-n0dx.onrender.com/api/store-accounts");
+                if (!response.ok) throw new Error("Failed to fetch store accounts");
+
+                const data = await response.json();
+                const matchedStore = data.find(s => s.store_ID.toString() === storeID.toString());
+
+                if (matchedStore) {
+                    setStore(matchedStore);
+                    setFormData({
+                        store_location: matchedStore.store_location,
+                        username: matchedStore.username,
+                        password: matchedStore.password,
+                        store_name: matchedStore.store_name,
+                        store_contact: matchedStore.store_contact,
+                        store_address: matchedStore.store_address,
+                    });
+                } else {
+                    console.warn("Store not found for storeID:", storeID);
+                }
+            } catch (err) {
+                console.error("Error fetching store:", err);
+            } finally {
+                setLoading(false);
             }
-            const data = await response.json();
-            const matchedStore = data.find((store) => store.store_ID.toString() === storeID.toString());
-            setStore(matchedStore);
-            if (matchedStore) {
-                setFormData({
-                    store_location: matchedStore.store_location,
-                    username: matchedStore.username,
-                    password: matchedStore.password,
-                    store_name: matchedStore.store_name,
-                    store_contact: matchedStore.store_contact,
-                    store_address: matchedStore.store_address,
-                });
-            }
-            setLoading(false); // Stop loading after data is fetched
         };
 
         fetchStoreInfo();
     }, [storeID]);
 
     const handlePasswordSubmit = () => {
-        if (passwordInput === store.password) {
+        if (passwordInput === store?.password) {
             setIsPasswordCorrect(true);
-            setEditMode(true); // Enable editing after correct password
+            setEditMode(true);
             setShowPasswordVerification(false);
         } else {
             setIsPasswordCorrect(false);
@@ -60,13 +64,13 @@ function StoreProfile({ onClose, isOpen, storeID }) {
     };
 
     const handleEditClick = () => {
-        setShowPasswordVerification(true); // Show password verification panel
+        setShowPasswordVerification(true);
     };
 
     const handleChange = (e) => {
         const { name, value } = e.target;
-        setFormData((prevState) => ({
-            ...prevState,
+        setFormData((prev) => ({
+            ...prev,
             [name]: value,
         }));
     };
@@ -74,29 +78,44 @@ function StoreProfile({ onClose, isOpen, storeID }) {
     const handleSave = async () => {
         try {
             const response = await fetch(`https://backendthirdv-n0dx.onrender.com/api/store-accounts/${store.store_ID}`, {
-                method: 'PUT', // Use PUT or PATCH depending on your API
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(formData), // Send the updated form data
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(formData),
             });
 
-            if (!response.ok) {
-                throw new Error('Failed to update store information');
-            }
+            if (!response.ok) throw new Error('Failed to update store');
 
             const updatedStore = await response.json();
-            setStore(updatedStore); // Update local state with the new store data
-            setEditMode(false); // Disable edit mode after saving
-            console.log('Store information updated successfully:', updatedStore);
+            setStore(updatedStore);
+            setEditMode(false);
         } catch (error) {
-            console.error('Error updating store information:', error);
+            console.error("Error updating store:", error);
         }
     };
 
+    if (loading) {
+        return (
+            <div className={styles.overlay}>
+                <div className={styles.floatingPanel}>
+                    <p>Loading...</p>
+                </div>
+            </div>
+        );
+    }
+
+    if (!store) {
+        return (
+            <div className={styles.overlay}>
+                <div className={styles.floatingPanel}>
+                    <p>Store not found.</p>
+                    <button className={styles.closeButton} onClick={onClose}>✖</button>
+                </div>
+            </div>
+        );
+    }
+
     return (
         <>
-            {/* Store Profile Edit - Password Verification */}
             {showPasswordVerification && (
                 <div style={{ position: 'fixed', zIndex: 10000 }}>
                     <StoreProfileEdit
@@ -110,127 +129,54 @@ function StoreProfile({ onClose, isOpen, storeID }) {
                 </div>
             )}
 
-            {/* Store Profile Panel */}
             <div className={styles.overlay}>
                 <div className={styles.floatingPanel}>
                     <button className={styles.closeButton} onClick={onClose}>✖</button>
                     <h2 className={styles.title}>Store Profile</h2>
 
-                    {loading ? (
-                        <p>Loading...</p> // Show loading message while data is being fetched
-                    ) : (
-                        <div className={styles.profileInfo}>
-                            {editMode ? (
-                                <>
-                                    <div className={styles.row}>
-                                        <label>Store ID:</label>
-                                        <span>{store.store_ID}</span>
-                                    </div>
+                    <div className={styles.profileInfo}>
+                        {editMode ? (
+                            <>
+                                <div className={styles.row}><label>Store ID:</label><span>{store.store_ID}</span></div>
+                                <div className={styles.row}><label>Store Location:</label><span>{formData.store_location}</span></div>
 
-                                    <div className={styles.row}>
-                                        <label>Store Location:</label>
-                                        <span>{formData.store_location}</span>
-                                    </div>
+                                <div className={styles.row}>
+                                    <label>ThirdVision ID:</label>
+                                    <input type="text" name="username" value={formData.username} onChange={handleChange} className={styles.input} />
+                                </div>
+                                <div className={styles.row}>
+                                    <label>Password:</label>
+                                    <input type="password" name="password" value={formData.password} onChange={handleChange} className={styles.input} />
+                                </div>
+                                <div className={styles.row}>
+                                    <label>Store Name:</label>
+                                    <input type="text" name="store_name" value={formData.store_name} onChange={handleChange} className={styles.input} />
+                                </div>
+                                <div className={styles.row}>
+                                    <label>Store Contact:</label>
+                                    <input type="text" name="store_contact" value={formData.store_contact} onChange={handleChange} className={styles.input} />
+                                </div>
+                                <div className={styles.row}>
+                                    <label>Store Address:</label>
+                                    <input type="text" name="store_address" value={formData.store_address} onChange={handleChange} className={styles.input} />
+                                </div>
 
-                                    <div className={styles.row}>
-                                        <label>ThirdVision ID:</label>
-                                        <input
-                                            type="text"
-                                            name="username"
-                                            value={formData.username}
-                                            onChange={handleChange}
-                                            className={styles.input}
-                                        />
-                                    </div>
+                                <button className={styles.saveButton} onClick={handleSave}>Save Changes</button>
+                            </>
+                        ) : (
+                            <>
+                                <button className={styles.editButton} onClick={handleEditClick}>Edit</button>
 
-                                    <div className={styles.row}>
-                                        <label>Password:</label>
-                                        <input
-                                            type="password"
-                                            name="password"
-                                            value={formData.password}
-                                            onChange={handleChange}
-                                            className={styles.input}
-                                        />
-                                    </div>
-
-                                    <div className={styles.row}>
-                                        <label>Store Name:</label>
-                                        <input
-                                            type="text"
-                                            name="store_name"
-                                            value={formData.store_name}
-                                            onChange={handleChange}
-                                            className={styles.input}
-                                        />
-                                    </div>
-
-                                    <div className={styles.row}>
-                                        <label>Store Contact:</label>
-                                        <input
-                                            type="text"
-                                            name="store_contact"
-                                            value={formData.store_contact}
-                                            onChange={handleChange}
-                                            className={styles.input}
-                                        />
-                                    </div>
-
-                                    <div className={styles.row}>
-                                        <label>Store Address:</label>
-                                        <input
-                                            type="text"
-                                            name="store_address"
-                                            value={formData.store_address}
-                                            onChange={handleChange}
-                                            className={styles.input}
-                                        />
-                                    </div>
-
-                                    <button className={styles.saveButton} onClick={handleSave}>Save Changes</button>
-                                </>
-                            ) : (
-                                <>
-                                    <button className={styles.editButton} onClick={handleEditClick}>Edit</button>
-
-                                    <div className={styles.row}>
-                                        <label>Store ID:</label>
-                                        <span>{store.store_ID}</span>
-                                    </div>
-
-                                    <div className={styles.row}>
-                                        <label>Store Location:</label>
-                                        <span>{store.store_location}</span>
-                                    </div>
-
-                                    <div className={styles.row}>
-                                        <label>ThirdVision ID:</label>
-                                        <span>{store.username}</span>
-                                    </div>
-
-                                    <div className={styles.row}>
-                                        <label>Password:</label>
-                                        <span>••••••••</span>
-                                    </div>
-
-                                    <div className={styles.row}>
-                                        <label>Store Name:</label>
-                                        <span>{store.store_name}</span>
-                                    </div>
-
-                                    <div className={styles.row}>
-                                        <label>Store Contact:</label>
-                                        <span>{store.store_contact}</span>
-                                    </div>
-
-                                    <div className={styles.row}>
-                                        <label>Store Address:</label>
-                                        <span>{store.store_address}</span>
-                                    </div>
-                                </>
-                            )}
-                        </div>
-                    )}
+                                <div className={styles.row}><label>Store ID:</label><span>{store.store_ID}</span></div>
+                                <div className={styles.row}><label>Store Location:</label><span>{store.store_location}</span></div>
+                                <div className={styles.row}><label>ThirdVision ID:</label><span>{store.username}</span></div>
+                                <div className={styles.row}><label>Password:</label><span>••••••••</span></div>
+                                <div className={styles.row}><label>Store Name:</label><span>{store.store_name}</span></div>
+                                <div className={styles.row}><label>Store Contact:</label><span>{store.store_contact}</span></div>
+                                <div className={styles.row}><label>Store Address:</label><span>{store.store_address}</span></div>
+                            </>
+                        )}
+                    </div>
                 </div>
             </div>
         </>
