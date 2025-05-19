@@ -55,6 +55,7 @@ function Sidebar({ setActivePanel, storeID }) {
                 ☰ <span>ThirdVision</span>
             </button>
 
+            {/* Sidebar Panel */}
             <div className={`${styles.sidebar} ${isOpen ? styles.open : styles.closed}`}>
                 <div className={styles.menu}>
                     <img src={eye2} className={styles.logo} alt="Logo" />
@@ -67,15 +68,13 @@ function Sidebar({ setActivePanel, storeID }) {
                     <button onClick={() => setActivePanel("StoreProfile")}>
                         <img src={user} className={styles.icon} alt="Store Profile" /> Store Profile
                     </button>
-
                     <button onClick={() => setActivePanel("IncidentHistory")}>
                         <img src={report} className={styles.icon} alt="Incident History" /> Incident History
                     </button>
-
                     <button onClick={() => setActivePanel("DeletedHistory")}>
                         <img src={bin} className={styles.icon} alt="Trash" /> Trash
                     </button>
-
+                    
                     <p className={styles.p}>© 2025 ThirdVision</p>
 
                     {/* Footer of the sidebar */}
