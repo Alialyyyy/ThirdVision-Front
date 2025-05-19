@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styles from './StoreregPanel.module.css';
-import AdminVerify from '../Others/AdminPassword.jsx';
 
 function AccountRegistrationPanel({ closePanel }) {
     const [formData, setFormData] = useState({
@@ -13,10 +12,7 @@ function AccountRegistrationPanel({ closePanel }) {
         store_contact: '',
     });
 
-    const [isVisible, setIsVisible] = useState(true);
     const [status, setStatus] = useState(null);
-    const [showVerify, setShowVerify] = useState(false);
-
     const navigate = useNavigate();
 
     const isFormComplete = Object.values(formData).every(value => value.trim() !== "");
@@ -38,28 +34,12 @@ function AccountRegistrationPanel({ closePanel }) {
     };
 
     const handleClose = () => {
-        setIsVisible(false);
+        closePanel(); // Notify parent to hide the panel
     };
 
-    const handleProtectedSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        if (!isFormComplete) {
-            setStatus('error');
-            return;
-        }
-        setShowVerify(true);
-    };
 
-    const onVerified = () => {
-        setShowVerify(false);
-        submitData();
-    };
-
-    const onCloseVerify = () => {
-        setShowVerify(false);
-    };
-
-    const submitData = async () => {
         try {
             const response = await fetch('https://backendthirdv-n0dx.onrender.com/api/register', {
                 method: 'POST',
@@ -72,28 +52,33 @@ function AccountRegistrationPanel({ closePanel }) {
             if (response.ok) {
                 setStatus('success');
                 setTimeout(() => {
-                    setIsVisible(false);
+                    closePanel();
                     navigate('/Dashboard');
                 }, 2000);
-            } else if (data.message === 'Store with the same username, store name, and store address already exists!') {
+            } else if (
+                data.message ===
+                'Store with the same username, store name, and store address already exists!'
+            ) {
                 setStatus('duplicate');
             } else {
                 setStatus('error');
             }
         } catch (error) {
+            console.error('Registration failed:', error);
             setStatus('error');
         }
     };
 
-    return isVisible ? (
+    return (
         <div className={styles.overlay}>
-        <div className={styles.floatingpanel}>
-            <button className={styles.closeButton} onClick={handleClose}>
-                &times;
-            </button>
-            <>
+            <div className={styles.floatingpanel}>
+                <button className={styles.closeButton} onClick={handleClose}>
+                    &times;
+                </button>
+
                 <h2 className={styles.h2}>Account Registration</h2>
-                <form onSubmit={handleProtectedSubmit}>
+
+                <form onSubmit={handleSubmit}>
                     <input
                         type="text"
                         name="username"
@@ -124,9 +109,7 @@ function AccountRegistrationPanel({ closePanel }) {
                         onChange={handleChange}
                         required
                     >
-                        <option value="" disabled>
-                            Select Barangay
-                        </option>
+                        <option value="" disabled>Select Barangay</option>
                         {locations.map((location) => (
                             <option key={location} value={location}>
                                 {location}
@@ -145,7 +128,7 @@ function AccountRegistrationPanel({ closePanel }) {
                         type="text"
                         name="store_contact"
                         placeholder="Store Contact"
-                        value={`+63${formData.store_contact}`}
+                        value={formData.store_contact ? `+63${formData.store_contact}` : ''}
                         onChange={(e) => {
                             let input = e.target.value.replace(/\D/g, '');
                             if (input.startsWith('63')) {
@@ -166,28 +149,19 @@ function AccountRegistrationPanel({ closePanel }) {
                         </button>
                     </div>
                 </form>
-            </>
 
-            {status === 'success' && (
-                <p className={styles.successMessage}>✅ Store Registered! Redirecting...</p>
-            )}
-            {status === 'duplicate' && (
-                <p className={styles.errorMessage}>❌ Store Account already exists! Try again.</p>
-            )}
-            {status === 'error' && (
-                <p className={styles.errorMessage}>❌ Registration failed. Try again.</p>
-            )}
-
-            {/* Admin Verification Modal */}
-            {showVerify && (
-                <AdminVerify
-                    closePanel={onCloseVerify}
-                    onVerified={onVerified}
-                />
-            )}
+                {status === 'success' && (
+                    <p className={styles.successMessage}>✅ Store Registered! Redirecting...</p>
+                )}
+                {status === 'duplicate' && (
+                    <p className={styles.errorMessage}>❌ Store Account already exists! Try again.</p>
+                )}
+                {status === 'error' && (
+                    <p className={styles.errorMessage}>❌ Registration failed. Try again.</p>
+                )}
+            </div>
         </div>
-        </div>
-    ) : null;
+    );
 }
 
 export default AccountRegistrationPanel;

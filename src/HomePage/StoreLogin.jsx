@@ -75,26 +75,20 @@ function StoreAccountLogin({ onClose }) {
                                 {showPasscode ? 'Hide' : 'Show'}
                             </button>
                         </div>
-                        {/* Create Account Button */}
-                        <div
-                        className={styles.createAccountLink}
-                        onClick={() => setShowRegistration(true)}
-                        style={{
-                            cursor: 'pointer',
-                            color: 'blue',
-                            display: 'block',          
-                            textAlign: 'center',      
-                            margin: '8px auto',      
-                        }}
-                        >
-                        CREATE ACCOUNT
-                        </div>
                     </label>
                     {errorMessage && <p className={styles.error}>{errorMessage}</p>}
                     <button type="submit" className={styles.submitButton}>
                         Login
                     </button>
                 </form>
+
+                {/* Create Account Button */}
+                        <div
+                        className={styles.createAccountLink}
+                        onClick={() => setShowRegistration(true)}
+                        >
+                        <p className={styles.createacc}>REGISTER AN ACCOUNT</p>
+                        </div>
 
                 {/* Conditional render registration panel */}
                 {showRegistration && (

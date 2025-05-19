@@ -1,88 +1,13 @@
-
-
+/* Overlay background */
 .overlay {
     position: fixed;
     top: 0;
     left: 0;
     height: 100vh;
     width: 100vw;
-    background: rgba(0, 0, 0, 0.5); /* dim background */
-    z-index: 9998; /* just below the panel (which is 9999) */
-    backdrop-filter: blur(2px); /* optional blur effect */
-}
-
-.style {
-    border: 1px solid rgba(0, 0, 0, 0.2);
-    border-radius: 15px;
-    box-shadow: 5px 5px 8px hsl(0, 82%, 2%);
-    padding: 15px;
-    max-width: 300px;
-    flex: 0 0 30%;
-    background:rgb(51, 66, 81);
-    color: rgba(255, 255, 255);
-    text-align: center;
-    font-family: 'Poppins', Arial, sans-serif;
-    font-weight: 600;
-    margin-bottom: 2px;
-    transition: transform 0.2s ease-in-out;
-}
-
-h2{
-    color: #000000a8;
-    margin: 10px;
-}
-
-.style:hover {
-    transform: none;
-}
-
-.closeButton {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    background: rgba(0, 0, 0, 0.082); 
-    border: 1px solid #000; 
-    font-size: 22px;
-    font-weight: bold;
-    cursor: pointer;
-    color: #ff0000; 
-    border-radius: 50%;
-    width: 30px;
-    height: 30px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.3s ease-in-out;
-}
-
-.closeButton:hover {
-    background: rgb(255, 0, 0);
-    color: rgb(255, 255, 255);
-}
-
-/* Icon Styling */
-.IconRegAcc {
-    width: 50px;
-    height: auto;
-    margin-top: 5px;
-}
-
-/* Text Styling */
-.pstyle {
-    font-family: 'Trebuchet MS', Arial, sans-serif;
-    margin: 0;
-    padding: 10px;
-    font-size: 20px;
-}
-
-select {
-    padding: 10px;
-    margin: 10px 0;
-    border: 1px solid #ddd;
-    border-radius: 7px;
-    font-size: 16px;
-    width: 100%; 
-    color:rgba(0, 0, 0, 0.63);
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 9998; 
+    backdrop-filter: blur(2px);
 }
 
 /* Floating Panel */
@@ -103,7 +28,7 @@ select {
 }
 
 /* Form Inputs */
-.floatingpanel input {
+.floatingpanel input{
     width: 100%;
     margin-bottom: 12px;
     padding: 12px;
@@ -119,27 +44,63 @@ select {
     box-shadow: 0 0 5px rgba(76, 175, 80, 0.3);
 }
 
-/* Button Styling */
-.floatingpanel .buttons {
-    display: flex;
-    gap: 10px;
+.floatingpanel select {
     width: 100%;
-    justify-content: center;
+    margin-bottom: 12px;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 16px;
+    transition: border-color 0.3s ease-in-out;
 }
 
-.floatingpanel button {
-    padding: 12px;
-    font-size: 16px;
+.floatingpanel input:focus,
+.floatingpanel select:focus {
+    border-color: #4CAF50;
+    outline: none;
+    box-shadow: 0 0 5px rgba(76, 175, 80, 0.3);
+}
+
+select {
+    color: rgba(0, 0, 0, 0.63);
+}
+
+/* Close Button */
+.closeButton {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: rgba(0, 0, 0, 0.082);
+    border: 1px solid #000;
+    font-size: 22px;
     font-weight: bold;
-    color: white;
-    border: none;
-    border-radius: 6px;
     cursor: pointer;
+    color: #ff0000;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     transition: all 0.3s ease-in-out;
 }
 
-/* Register Button Styling */
-.buttons{
+.closeButton:hover {
+    background: rgb(255, 0, 0);
+    color: white;
+}
+
+/* Header */
+.h2 {
+    color: #000000a8;
+    margin: 10px 0 20px;
+    font-family: 'Poppins', Arial, sans-serif;
+    font-weight: 600;
+    text-align: center;
+}
+
+/* Button Container */
+.buttons {
     padding: 8px;
     margin-right: 5px;
     cursor: pointer;
@@ -149,6 +110,24 @@ select {
     border-radius: 5px;
 }
 
-.buttons:hover{
+
+.buttons:hover {
     background: #039c03;
+}
+
+/* Messages */
+.successMessage,
+.errorMessage {
+    margin-top: 10px;
+    font-size: 15px;
+    font-weight: bold;
+    text-align: center;
+}
+
+.successMessage {
+    color: #28a745;
+}
+
+.errorMessage {
+    color: #dc3545;
 }
