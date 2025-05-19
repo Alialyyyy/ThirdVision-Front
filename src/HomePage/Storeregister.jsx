@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styles from './StoreregPanel.module.css';
 
@@ -34,7 +34,7 @@ function AccountRegistrationPanel({ closePanel }) {
     };
 
     const handleClose = () => {
-        closePanel(); // Notify parent to hide the panel
+        closePanel();
     };
 
     const handleSubmit = async (e) => {
@@ -50,11 +50,8 @@ function AccountRegistrationPanel({ closePanel }) {
             const data = await response.json();
 
             if (response.ok) {
-                setStatus('success');
-                setTimeout(() => {
-                    closePanel();
-                    navigate('/Dashboard');
-                }, 2000);
+            setStatus('success');
+            navigate('/');
             } else if (
                 data.message ===
                 'Store with the same username, store name, and store address already exists!'
