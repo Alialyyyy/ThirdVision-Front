@@ -6,10 +6,6 @@ import {
 import styles from "./RepCountPanel.module.css";
 
 const COLORS = ["#3498db", "#e74c3c", "#2ecc71", "#f39c12", "#9b59b6", "#1abc9c", "#ff6384", "#36a2eb"];
-const MONTHS = [
-    "January", "February", "March", "April", "May", "June",
-    "July", "August", "September", "October", "November", "December"
-];
 
 function RepCountPanel() {
     const [monthlyData, setMonthlyData] = useState([]);
@@ -18,37 +14,25 @@ function RepCountPanel() {
     const today = new Date().toLocaleDateString();
     const currentYear = new Date().getFullYear();
 
-    // ✅ Fill bar chart with all 12 months (0s where missing)
+    // 📊 Monthly Bar Chart Data (full 12 months)
     useEffect(() => {
-        fetch("https://backendthirdv.onrender.com/api/reports-by-month")
+        fetch("https://backendthirdv-n0dx.onrender.com/api/full-reports-by-month")
             .then((res) => res.json())
             .then((data) => {
-                const monthMap = new Map(data.map(item => [item.monthName, item.count]));
-                const filledData = MONTHS.map(month => ({
-                    monthName: month,
-                    count: monthMap.get(month) || 0
-                }));
-                setMonthlyData(filledData);
+                console.log("📊 Full Monthly Data:", data);
+                setMonthlyData(data || []);
             })
             .catch((err) => console.error("Monthly fetch error:", err));
     }, []);
 
-    // ✅ Accurate total count (from backend)
-    useEffect(() => {
-        fetch("https://backendthirdv.onrender.com/api/history-count")
-            .then(res => res.json())
-            .then(data => setTotalReports(data.count || 0))
-            .catch(err => console.error("Count fetch error:", err));
-    }, []);
-
-    // 📊 Pie Chart Data (Reports by location)
+    // 📊 Pie Chart Data (reports by location)
     useEffect(() => {
         fetch("https://backendthirdv-n0dx.onrender.com/api/reports-by-location")
             .then((res) => res.json())
             .then((data) => {
                 const formatted = data.map(item => ({
-                    name: item.name || item.store_location || "Unknown",
-                    value: item.value || item.count || 0,
+                    name: item.store_location || item.name || "Unknown",
+                    value: item.count || item.value || 0,
                 }));
                 setLocationData(formatted);
             })
@@ -58,11 +42,24 @@ function RepCountPanel() {
             });
     }, []);
 
+    // 📈 Total Reports Count
+    useEffect(() => {
+        fetch("https://backendthirdv-n0dx.onrender.com/api/total-reports-this-year")
+            .then((res) => res.json())
+            .then((data) => {
+                setTotalReports(data.count || 0);
+            })
+            .catch((err) => {
+                console.error("Total reports fetch error:", err);
+                setTotalReports(0);
+            });
+    }, []);
+
     return (
         <div className={styles.RepCountPanel}>
             <h2>📊 Report Statistics - {currentYear}</h2>
             <div className={styles.chartsWrapper}>
-                {/* Bar Chart */}
+                {/* Bar Chart - Reports per Month */}
                 <div className={styles.chartContainer}>
                     <ResponsiveContainer width="100%" height={375}>
                         <BarChart data={monthlyData} margin={{ top: 10, right: 30, left: 20, bottom: 10 }}>
@@ -75,12 +72,12 @@ function RepCountPanel() {
                             </YAxis>
                             <Tooltip />
                             <Legend />
-                            <Bar name="Report Count" dataKey="count" fill="darkred" barSize={24} isAnimationActive />
+                            <Bar name="Report Count" dataKey="count" fill="darkred" barSize={20} isAnimationActive />
                         </BarChart>
                     </ResponsiveContainer>
                 </div>
 
-                {/* Pie Chart */}
+                {/* Pie Chart - Reports by Location */}
                 <div className={styles.chartContainer}>
                     <ResponsiveContainer width="100%" height={375}>
                         <PieChart>
@@ -104,7 +101,7 @@ function RepCountPanel() {
                 </div>
             </div>
 
-            {/* Summary */}
+            {/* 📅 Summary at Bottom */}
             <div className={styles.reportSummary}>
                 <p1 className={styles.totalCount}>{totalReports}</p1>
                 <p><strong>Total Reports</strong></p>
