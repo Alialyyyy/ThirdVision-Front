@@ -49,9 +49,12 @@ function AccountRegistrationPanel({ closePanel }) {
 
             const data = await response.json();
 
-            if (response.ok) {
-            setStatus('success');
-            navigate('/');
+             if (response.ok) {
+                setStatus('success');
+                setTimeout(() => {
+                    closePanel();
+                    navigate('/');
+                }, 2000);
             } else if (
                 data.message ===
                 'Store with the same username, store name, and store address already exists!'
