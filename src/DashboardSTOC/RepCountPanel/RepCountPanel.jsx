@@ -6,6 +6,10 @@ import {
 import styles from "./RepCountPanel.module.css";
 
 const COLORS = ["#3498db", "#e74c3c", "#2ecc71", "#f39c12", "#9b59b6", "#1abc9c", "#ff6384", "#36a2eb"];
+const MONTHS = [
+    "January", "February", "March", "April", "May", "June",
+    "July", "August", "September", "October", "November", "December"
+];
 
 function RepCountPanel() {
     const [monthlyData, setMonthlyData] = useState([]);
@@ -14,28 +18,37 @@ function RepCountPanel() {
     const today = new Date().toLocaleDateString();
     const currentYear = new Date().getFullYear();
 
-    // 📊 Monthly Bar Chart Data (reports per month for current year)
+    // ✅ Fill bar chart with all 12 months (0s where missing)
     useEffect(() => {
         fetch("https://backendthirdv.onrender.com/api/reports-by-month")
             .then((res) => res.json())
             .then((data) => {
-                console.log("📊 Monthly Data:", data);
-                setMonthlyData(data || []);
-                const total = data.reduce((sum, item) => sum + (item.count || 0), 0);
-                setTotalReports(total);
+                const monthMap = new Map(data.map(item => [item.monthName, item.count]));
+                const filledData = MONTHS.map(month => ({
+                    monthName: month,
+                    count: monthMap.get(month) || 0
+                }));
+                setMonthlyData(filledData);
             })
             .catch((err) => console.error("Monthly fetch error:", err));
     }, []);
 
-    // 📊 Pie Chart Data (reports by location for current year)
+    // ✅ Accurate total count (from backend)
+    useEffect(() => {
+        fetch("https://backendthirdv.onrender.com/api/history-count")
+            .then(res => res.json())
+            .then(data => setTotalReports(data.count || 0))
+            .catch(err => console.error("Count fetch error:", err));
+    }, []);
+
+    // 📊 Pie Chart Data (Reports by location)
     useEffect(() => {
         fetch("https://backendthirdv-n0dx.onrender.com/api/reports-by-location")
             .then((res) => res.json())
             .then((data) => {
-                console.log("📊 Location Data:", data);
                 const formatted = data.map(item => ({
-                    name: item.store_location || item.name || "Unknown",
-                    value: item.count || item.value || 0,
+                    name: item.name || item.store_location || "Unknown",
+                    value: item.value || item.count || 0,
                 }));
                 setLocationData(formatted);
             })
@@ -49,7 +62,7 @@ function RepCountPanel() {
         <div className={styles.RepCountPanel}>
             <h2>📊 Report Statistics - {currentYear}</h2>
             <div className={styles.chartsWrapper}>
-                {/* Bar Chart - Reports per Month */}
+                {/* Bar Chart */}
                 <div className={styles.chartContainer}>
                     <ResponsiveContainer width="100%" height={375}>
                         <BarChart data={monthlyData} margin={{ top: 10, right: 30, left: 20, bottom: 10 }}>
@@ -62,12 +75,12 @@ function RepCountPanel() {
                             </YAxis>
                             <Tooltip />
                             <Legend />
-                            <Bar name="Report Count" dataKey="count" fill="darkred" barSize={40} isAnimationActive />
-                            </BarChart>
+                            <Bar name="Report Count" dataKey="count" fill="darkred" barSize={24} isAnimationActive />
+                        </BarChart>
                     </ResponsiveContainer>
                 </div>
 
-                {/* Pie Chart - Reports by Location */}
+                {/* Pie Chart */}
                 <div className={styles.chartContainer}>
                     <ResponsiveContainer width="100%" height={375}>
                         <PieChart>
@@ -91,7 +104,7 @@ function RepCountPanel() {
                 </div>
             </div>
 
-            {/* 📅 Summary at Bottom */}
+            {/* Summary */}
             <div className={styles.reportSummary}>
                 <p1 className={styles.totalCount}>{totalReports}</p1>
                 <p><strong>Total Reports</strong></p>
