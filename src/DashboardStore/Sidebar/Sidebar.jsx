@@ -7,7 +7,6 @@ import report from "../../assets/report.png";
 import eye2 from "../../assets/eye2.png";
 import user from "../../assets/user.png";
 import acc from "../../assets/account.png";
-import logoutIcon from "../../assets/logoutIcon.png";
 
 function Sidebar({ setActivePanel, storeID }) {
     const [isOpen, setIsOpen] = useState(true);
@@ -53,7 +52,7 @@ function Sidebar({ setActivePanel, storeID }) {
         <>
             {/* ✅ Toggle Button Showing Store Name */}
             <button className={styles.toggleButton} onClick={() => setIsOpen(!isOpen)}>
-                ☰ 
+                ☰ <span>ThirdVision</span>
             </button>
 
             <div className={`${styles.sidebar} ${isOpen ? styles.open : styles.closed}`}>
