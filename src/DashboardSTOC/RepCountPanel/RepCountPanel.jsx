@@ -102,10 +102,10 @@ function RepCountPanel() {
             </div>
 
             {/* 📅 Summary at Bottom */}
-            <div className={styles.reportSummary}>
+            {/*<div className={styles.reportSummary}>
                 <p1 className={styles.totalCount}>{totalReports}</p1>
                 <p><strong>Total Reports</strong></p>
-            </div>
+            </div>*/}
         </div>
     );
 }
